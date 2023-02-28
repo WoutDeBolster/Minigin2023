@@ -110,6 +110,6 @@ void dae::Minigin::Run(const std::function<void()>& load)
 		renderer.Render();
 
 		auto sleepTime = duration_cast<duration<float>>(currentTime + milliseconds(m_MsPerFrame) - high_resolution_clock::now());
-		this_thread::sleep_for(sleepTime);
+		std::this_thread::sleep_for(sleepTime);
 	}
 }

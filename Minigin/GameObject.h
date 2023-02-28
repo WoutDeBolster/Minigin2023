@@ -1,5 +1,6 @@
 #pragma once
 #include <memory>
+#include <vector>
 #include "Transform.h"
 
 namespace dae
@@ -19,12 +20,28 @@ namespace dae
 		virtual void Update(float deltaTime);
 		virtual void Render() const;
 
-		void SetTexture(const std::string& filename);
 		void SetPosition(float x, float y);
+		glm::vec3 GetPosition() const;
+
+		// components
+		void AddComponent(std::shared_ptr<BaseComponent> myComponent);
+		template <typename T>
+		std::shared_ptr<T> GetComponent() const
+		{
+			for (std::shared_ptr<BaseComponent> bc : m_Components)
+			{
+				std::shared_ptr<T> castedPointer = dynamic_pointer_cast<T>(bc);
+				if (castedPointer)
+				{
+					return castedPointer;
+				}
+			}
+			return nullptr;
+		}
+		void RemoveComponent(std::shared_ptr<BaseComponent> myComponent);
 
 	private:
+		std::vector<std::shared_ptr<BaseComponent>> m_Components;
 		Transform m_transform{};
-		// todo: mmm, every gameobject has a texture? Is that correct?
-		std::shared_ptr<Texture2D> m_texture{};
 	};
 }

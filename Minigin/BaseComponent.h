@@ -18,7 +18,7 @@ namespace dae
 		virtual void Update(float deltaTime) = 0;
 		virtual void Render() const;
 
-	private:
+	protected:
 		std::weak_ptr<GameObject> m_pGameObject;
 	};
 }
