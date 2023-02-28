@@ -4,24 +4,23 @@
 
 namespace dae
 {
-	class Texture2D;
-
-	// todo: this should become final.
-	class GameObject 
+	class BaseComponent;
+	class GameObject final : public std::enable_shared_from_this<GameObject>
 	{
 	public:
-		virtual void Update();
-		virtual void Render() const;
-
-		void SetTexture(const std::string& filename);
-		void SetPosition(float x, float y);
-
 		GameObject() = default;
-		virtual ~GameObject();
+		~GameObject() = default;
+
 		GameObject(const GameObject& other) = delete;
 		GameObject(GameObject&& other) = delete;
 		GameObject& operator=(const GameObject& other) = delete;
 		GameObject& operator=(GameObject&& other) = delete;
+
+		virtual void Update(float deltaTime);
+		virtual void Render() const;
+
+		void SetTexture(const std::string& filename);
+		void SetPosition(float x, float y);
 
 	private:
 		Transform m_transform{};

@@ -10,7 +10,11 @@
 #include "Renderer.h"
 #include "ResourceManager.h"
 
+#include <thread>
+#include <chrono>
+
 SDL_Window* g_window{};
+using namespace std::chrono;
 
 void PrintSDLVersion()
 {
@@ -32,19 +36,19 @@ void PrintSDLVersion()
 		version.major, version.minor, version.patch);
 
 	SDL_TTF_VERSION(&version)
-	printf("We compiled against SDL_ttf version %u.%u.%u ...\n",
-		version.major, version.minor, version.patch);
+		printf("We compiled against SDL_ttf version %u.%u.%u ...\n",
+			version.major, version.minor, version.patch);
 
 	version = *TTF_Linked_Version();
 	printf("We are linking against SDL_ttf version %u.%u.%u.\n",
 		version.major, version.minor, version.patch);
 }
 
-dae::Minigin::Minigin(const std::string &dataPath)
+dae::Minigin::Minigin(const std::string& dataPath)
 {
 	PrintSDLVersion();
-	
-	if (SDL_Init(SDL_INIT_VIDEO) != 0) 
+
+	if (SDL_Init(SDL_INIT_VIDEO) != 0)
 	{
 		throw std::runtime_error(std::string("SDL_Init Error: ") + SDL_GetError());
 	}
@@ -57,7 +61,7 @@ dae::Minigin::Minigin(const std::string &dataPath)
 		480,
 		SDL_WINDOW_OPENGL
 	);
-	if (g_window == nullptr) 
+	if (g_window == nullptr)
 	{
 		throw std::runtime_error(std::string("SDL_CreateWindow Error: ") + SDL_GetError());
 	}
@@ -83,12 +87,29 @@ void dae::Minigin::Run(const std::function<void()>& load)
 	auto& sceneManager = SceneManager::GetInstance();
 	auto& input = InputManager::GetInstance();
 
+	auto lastTime = high_resolution_clock::now();
+	float lag = 0;
+
 	// todo: this update loop could use some work.
 	bool doContinue = true;
 	while (doContinue)
 	{
+		const auto currentTime = high_resolution_clock::now();
+		float deltaTime = duration<float>(currentTime - lastTime).count();
+		lastTime = currentTime;
+		lag += deltaTime;
+
 		doContinue = input.ProcessInput();
-		sceneManager.Update();
+		while (lag >= static_cast<float>(m_FixedTimeStep / 1000.f))
+		{
+			// FixedUpdate here if needed
+			lag -= m_MsPerFrame;
+		}
+
+		sceneManager.Update(deltaTime);
 		renderer.Render();
+
+		auto sleepTime = duration_cast<duration<float>>(currentTime + milliseconds(m_MsPerFrame) - high_resolution_clock::now());
+		this_thread::sleep_for(sleepTime);
 	}
 }
