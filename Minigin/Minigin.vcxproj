@@ -189,7 +189,7 @@
     <ClInclude Include="TextComp.h" />
     <ClInclude Include="Texture2D.h" />
     <ClInclude Include="TextureComp.h" />
-    <ClInclude Include="Transform.h" />
+    <ClInclude Include="TransformComp.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BaseComponent.cpp" />
@@ -206,7 +206,7 @@
     <ClCompile Include="TextComp.cpp" />
     <ClCompile Include="Texture2D.cpp" />
     <ClCompile Include="TextureComp.cpp" />
-    <ClCompile Include="Transform.cpp" />
+    <ClCompile Include="TransformComp.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -22,12 +22,12 @@ void dae::GameObject::Render() const
 
 void dae::GameObject::SetPosition(float x, float y)
 {
-	m_transform.SetPosition(x, y, 0.0f);
+	GetComponent<TransformComp>()->SetPosition(x, y, 0.f);
 }
 
 glm::vec3 dae::GameObject::GetPosition() const
 {
-	return m_transform.GetPosition();
+	return GetComponent<TransformComp>()->GetPosition();
 }
 
 void dae::GameObject::AddComponent(std::shared_ptr<BaseComponent> myComponent)

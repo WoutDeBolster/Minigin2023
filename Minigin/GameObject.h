@@ -1,7 +1,7 @@
 #pragma once
 #include <memory>
 #include <vector>
-#include "Transform.h"
+#include "TransformComp.h"
 
 namespace dae
 {
@@ -42,6 +42,5 @@ namespace dae
 
 	private:
 		std::vector<std::shared_ptr<BaseComponent>> m_Components;
-		Transform m_transform{};
 	};
 }
