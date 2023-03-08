@@ -20,8 +20,25 @@ namespace dae
 		virtual void Update(float deltaTime);
 		virtual void Render() const;
 
-		void SetPosition(float x, float y);
-		glm::vec3 GetPosition() const;
+		void UpdateWorldPosition();
+		void UpdateWorldRotation();
+		void UpdateWorldScale();
+
+		const glm::vec3& GetWorldPosition();
+		const glm::vec3& GetWorldRotation();
+		const glm::vec3& GetWorldScale();
+
+		const glm::vec3& GetLocalPosition() const;
+		const glm::vec3& GetLocalRotation() const;
+		const glm::vec3& GetLocalScale() const;
+
+		void SetWorldPosition(float x, float y);
+		void SetWorldRotation(float x, float y);
+		void SetWorldScale(float x, float y);
+
+		void SetLocalPosition(float x, float y);
+		void SetLocalRotation(float x, float y);
+		void SetLocalScale(float x, float y);
 
 		// components
 		void AddComponent(std::shared_ptr<BaseComponent> myComponent);
@@ -40,7 +57,21 @@ namespace dae
 		}
 		void RemoveComponent(std::shared_ptr<BaseComponent> myComponent);
 
+		// parent
+		void SetParent(std::shared_ptr<GameObject> parent, bool keepWorldPos = true, bool keepWorldRot = true, bool keepWorldScale = true);
+		std::shared_ptr<GameObject> GetParent() const;
+
+		// child
+		size_t GetChildCount() const;
+		std::shared_ptr<GameObject> GetChildAt(size_t idx) const;
+		void RemoveChild(size_t idx);
+		void RemoveChild(std::shared_ptr<GameObject> child);
+		void AddChild(std::shared_ptr<GameObject> child);
+
 	private:
 		std::vector<std::shared_ptr<BaseComponent>> m_Components;
+
+		std::weak_ptr<GameObject> m_Parent;
+		std::vector<std::shared_ptr<GameObject>> m_Childeren;
 	};
 }

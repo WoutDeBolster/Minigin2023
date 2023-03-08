@@ -15,6 +15,7 @@ void dae::FPSComp::Update(float deltaTime)
 
 	if (m_TextUpdateTimer >= 0.5f)
 	{
+		// todo: hotcode path!!!
 		m_pGameObject.lock().get()->GetComponent<TextComp>()->SetText(std::to_string(m_FPS) + "FPS");
 		m_TextUpdateTimer = 0.f;
 	}

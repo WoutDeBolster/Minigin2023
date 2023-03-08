@@ -90,7 +90,6 @@ void dae::Minigin::Run(const std::function<void()>& load)
 	auto lastTime = high_resolution_clock::now();
 	float lag = 0;
 
-	// todo: this update loop could use some work.
 	bool doContinue = true;
 	while (doContinue)
 	{
@@ -109,7 +108,7 @@ void dae::Minigin::Run(const std::function<void()>& load)
 		sceneManager.Update(deltaTime);
 		renderer.Render();
 
-		auto sleepTime = duration_cast<duration<float>>(currentTime + milliseconds(m_MsPerFrame) - high_resolution_clock::now());
+		const auto sleepTime = milliseconds(m_MsPerFrame) - duration_cast<milliseconds>(high_resolution_clock::now() - currentTime);
 		std::this_thread::sleep_for(sleepTime);
 	}
 }

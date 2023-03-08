@@ -25,7 +25,7 @@ namespace dae
 		void SetText(const std::string& text);
 
 	private:
-		bool m_needsUpdate;
+		bool m_NeedsUpdate;
 		std::string m_text;
 		std::shared_ptr<Font> m_font;
 		std::shared_ptr<Texture2D> m_textTexture;

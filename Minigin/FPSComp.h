@@ -20,7 +20,7 @@ namespace dae
 		int GetFPS() const;
 
 	private:
-		int m_FPS{ 0 };
+		int m_FPS{};
 		float m_TextUpdateTimer{};
 	};
 }

@@ -19,6 +19,7 @@ namespace dae
 		virtual void Render() const;
 
 	protected:
+		// todo: make getter vfor owner and put owner in private
 		std::weak_ptr<GameObject> m_pGameObject;
 	};
 }

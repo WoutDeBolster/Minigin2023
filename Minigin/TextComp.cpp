@@ -9,7 +9,7 @@
 dae::TextComp::TextComp(std::shared_ptr<GameObject> pOwner, const std::string& text,
 	const std::shared_ptr<Font> font, const SDL_Color& color)
 	: BaseComponent(pOwner)
-	, m_needsUpdate(true)
+	, m_NeedsUpdate(true)
 	, m_text(text)
 	, m_font(font)
 	, m_textTexture(nullptr)
@@ -19,9 +19,9 @@ dae::TextComp::TextComp(std::shared_ptr<GameObject> pOwner, const std::string& t
 
 void dae::TextComp::Update(float)
 {
-	if (m_needsUpdate)
+	if (m_NeedsUpdate)
 	{
-		const SDL_Color color = { 255,255,255 }; // only white text is supported now
+		const SDL_Color color = { 255,255,255 }; // todo: only white text is supported now
 		const auto surf = TTF_RenderText_Blended(m_font->GetFont(), m_text.c_str(), color);
 		if (surf == nullptr)
 		{
@@ -34,7 +34,7 @@ void dae::TextComp::Update(float)
 		}
 		SDL_FreeSurface(surf);
 		m_textTexture = std::make_shared<Texture2D>(texture);
-		m_needsUpdate = false;
+		m_NeedsUpdate = false;
 	}
 }
 
@@ -42,7 +42,7 @@ void dae::TextComp::Render() const
 {
 	if (m_textTexture != nullptr)
 	{
-		const auto& pos = m_pGameObject.lock().get()->GetPosition();
+		const auto& pos = m_pGameObject.lock().get()->GetWorldPosition();
 		Renderer::GetInstance().RenderTexture(*m_textTexture, pos.x, pos.y);
 	}
 }
@@ -51,5 +51,5 @@ void dae::TextComp::Render() const
 void dae::TextComp::SetText(const std::string& text)
 {
 	m_text = text;
-	m_needsUpdate = true;
+	m_NeedsUpdate = true;
 }
