@@ -31,6 +31,28 @@ void ObjReader::ParseObjFile(std::vector<Vertex>& vertices, std::vector<Face>& f
 	}
 }
 
+void ObjReader::WriteBobj(const std::string& fileName)
+{
+	if (m_Faces.size() != 0 && m_Vertices.size() != 0)
+	{
+		if (std::ofstream myOutput{ fileName, std::ios::binary }; myOutput.is_open())
+		{
+			for (Vertex vertex : m_Vertices)
+			{
+				myOutput.write((const char*)"v", sizeof(char));
+				myOutput.write((const char*)&vertex.x, sizeof(float) * 3);
+				myOutput << "\r\n"; // new line
+			}
+			for (Face face : m_Faces)
+			{
+				myOutput.write((const char*)"f", sizeof(char));
+				myOutput.write((const char*)&face.x, sizeof(float) * 3);
+				myOutput << "\r\n"; // new line
+			}
+		}
+	}
+}
+
 void ObjReader::GetVertex(const std::string& line)
 {
 	Vertex result{ 0, 0, 0 };

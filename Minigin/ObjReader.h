@@ -15,6 +15,7 @@ public:
 	ObjReader& operator=(ObjReader&&) noexcept = delete;
 
 	void ParseObjFile(std::vector<Vertex>& vertices, std::vector<Face>& faces);
+	void WriteBobj(const std::string& fileName);
 
 private:
 	void GetVertex(const std::string& line);
