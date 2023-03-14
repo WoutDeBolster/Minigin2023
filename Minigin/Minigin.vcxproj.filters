@@ -66,6 +66,9 @@
     <ClInclude Include="TransformComp.h">
       <Filter>Header Files\Components</Filter>
     </ClInclude>
+    <ClInclude Include="ObjReader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ResourceManager.cpp">
@@ -112,6 +115,9 @@
     </ClCompile>
     <ClCompile Include="FPSComp.cpp">
       <Filter>Source Files\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="ObjReader.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

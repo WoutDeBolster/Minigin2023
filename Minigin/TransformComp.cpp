@@ -44,7 +44,6 @@ void dae::TransformComp::SetWorldPosition(float x, float y, float z)
 	m_WorldPosition.x = x;
 	m_WorldPosition.y = y;
 	m_WorldPosition.z = z;
-
 }
 
 void dae::TransformComp::SetWorldRotation(float x, float y, float z)
@@ -52,7 +51,6 @@ void dae::TransformComp::SetWorldRotation(float x, float y, float z)
 	m_WorldRotation.x = x;
 	m_WorldRotation.y = y;
 	m_WorldRotation.z = z;
-
 }
 
 void dae::TransformComp::SetWorldScale(float x, float y, float z)
@@ -60,7 +58,6 @@ void dae::TransformComp::SetWorldScale(float x, float y, float z)
 	m_WorldScale.x = x;
 	m_WorldScale.y = y;
 	m_WorldScale.z = z;
-
 }
 
 void dae::TransformComp::SetLocalPosition(float x, float y, float z)
