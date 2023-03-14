@@ -1,17 +1,7 @@
 #pragma once
 #include <vector>
 #include <string>
-#include <math.h>
-
-struct Vertex
-{
-	float x, y, z;
-};
-
-struct Face
-{
-	int x, y, z;
-};
+#include "Structs.h"
 
 class ObjReader
 {

@@ -187,6 +187,7 @@
     <ClInclude Include="Scene.h" />
     <ClInclude Include="SceneManager.h" />
     <ClInclude Include="Singleton.h" />
+    <ClInclude Include="Structs.h" />
     <ClInclude Include="TextComp.h" />
     <ClInclude Include="Texture2D.h" />
     <ClInclude Include="TextureComp.h" />
