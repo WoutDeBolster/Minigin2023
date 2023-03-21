@@ -1,17 +1,17 @@
-#include "ObjReader.h"
+#include "BobjReader.h"
 #include <fstream>
 
-ObjReader::ObjReader(std::string fileLoc)
+BobjReader::BobjReader(std::string fileLoc)
 	:m_File{ fileLoc }
 {
 }
 
-void ObjReader::ParseObjFile(std::vector<Vertex>& vertices, std::vector<VertexNormals>& vertexNormals,
+void BobjReader::ParseBObjFile(std::vector<Vertex>& vertices, std::vector<VertexNormals>& vertexNormals,
 	std::vector<Face>& faces, std::vector<std::string>& commands)
 {
 	std::ifstream objFile;
 	std::string line;
-	objFile.open(m_File.c_str());
+	objFile.open(m_File.c_str(), std::ios::binary);
 	if (objFile.is_open())
 	{
 		while (!objFile.eof())
@@ -19,19 +19,35 @@ void ObjReader::ParseObjFile(std::vector<Vertex>& vertices, std::vector<VertexNo
 			std::getline(objFile, line);
 			if (line.find("v", 0) == 0)
 			{
-				GetVertex(line);
+				char startingLetter{ 'c' };;
+				Vertex result{ 0, 0, 0 };
+				objFile.read(&startingLetter, sizeof(startingLetter));
+				objFile.read((char*)&result, sizeof(result));
+				m_Vertices.push_back(result);
 			}
 			if (line.find("vn", 0) == 0)
 			{
-				GetVertexNormal(line);
+				char startingLetter{ 'c' };;
+				VertexNormals result{ 0, 0, 0 };
+				objFile.read(&startingLetter, sizeof(startingLetter));
+				objFile.read((char*)&result, sizeof(result));
+				m_VertexNormals.push_back(result);
 			}
 			if (line.find("f", 0) == 0)
 			{
-				GetFace(line);
+				char startingLetter{ 'c' };;
+				Face result{ 0, 0, 0 };
+				objFile.read(&startingLetter, sizeof(startingLetter));
+				objFile.read((char*)&result, sizeof(result));
+				m_Faces.push_back(result);
 			}
 			if (line.find("#", 0) == 0)
 			{
-				GetCommand(line, static_cast<char>(line.size()));
+				//char startingLetter{ 'c' };
+				//std::string result{ "?" };
+				//objFile.read((char*)startingLetter, sizeof(startingLetter));
+				//objFile.read((char*)&result, sizeof(line));
+				//m_Commands.push_back(result);
 			}
 		}
 
@@ -44,11 +60,11 @@ void ObjReader::ParseObjFile(std::vector<Vertex>& vertices, std::vector<VertexNo
 	}
 }
 
-void ObjReader::WriteBobj(const std::string& fileName)
+void BobjReader::Writeobj(const std::string& fileName)
 {
 	if (m_HasParsed)
 	{
-		if (std::ofstream myOutput{ fileName, std::ios::binary }; myOutput.is_open())
+		if (std::ofstream myOutput{ fileName }; myOutput.is_open())
 		{
 			for (Vertex vertex : m_Vertices)
 			{
@@ -77,38 +93,4 @@ void ObjReader::WriteBobj(const std::string& fileName)
 			}
 		}
 	}
-}
-
-void ObjReader::GetVertex(const std::string& line)
-{
-	Vertex result{ 0, 0, 0 };
-	// https://www.ibm.com/docs/en/zos/2.3.0?topic=programs-sscanf-read-format-data
-	sscanf_s(line.c_str(), "v %f %f %f", &result.x, &result.y, &result.z);
-
-	m_Vertices.push_back(result);
-}
-
-void ObjReader::GetVertexNormal(const std::string& line)
-{
-	VertexNormals result{ 0, 0, 0 };
-	sscanf_s(line.c_str(), "v %f %f %f", &result.x, &result.y, &result.z);
-
-	m_VertexNormals.push_back(result);
-}
-
-void ObjReader::GetFace(const std::string& line)
-{
-	Face result{ 0, 0, 0 };
-	sscanf_s(line.c_str(), "v %i %i %i", &result.x, &result.y, &result.z);
-
-	m_Faces.push_back(result);
-}
-
-void ObjReader::GetCommand(const std::string& line, const char stringSize)
-{
-	char result[255];
-	sscanf_s(line.c_str(), "# %s", result, stringSize);
-	result[stringSize] = 0;
-
-	m_Commands.push_back(result);
 }

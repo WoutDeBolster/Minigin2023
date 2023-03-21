@@ -78,6 +78,9 @@
     <ClInclude Include="ObjReader.h">
       <Filter>Header Files\FileReadersAndWriters</Filter>
     </ClInclude>
+    <ClInclude Include="BobjReader.h">
+      <Filter>Header Files\FileReadersAndWriters</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ResourceManager.cpp">
@@ -126,6 +129,9 @@
       <Filter>Source Files\Components</Filter>
     </ClCompile>
     <ClCompile Include="ObjReader.cpp">
+      <Filter>Source Files\FileReadersAndWriters</Filter>
+    </ClCompile>
+    <ClCompile Include="BobjReader.cpp">
       <Filter>Source Files\FileReadersAndWriters</Filter>
     </ClCompile>
   </ItemGroup>
