@@ -25,6 +25,12 @@
     <Filter Include="Source Files\FileReadersAndWriters">
       <UniqueIdentifier>{9150ad73-93f0-495f-ae09-d32ac3b87b09}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Imgui">
+      <UniqueIdentifier>{19ff8fd8-b736-462d-8e75-81628e43fca4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Imgui">
+      <UniqueIdentifier>{84cdd518-5b2b-4f3e-87f7-d2ad6b4cac30}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Singleton.h">
@@ -37,9 +43,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Texture2D.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="InputManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="GameObject.h">
@@ -80,6 +83,9 @@
     </ClInclude>
     <ClInclude Include="BobjReader.h">
       <Filter>Header Files\FileReadersAndWriters</Filter>
+    </ClInclude>
+    <ClInclude Include="InputManager.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
