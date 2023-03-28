@@ -98,7 +98,7 @@ void dae::Minigin::Run(const std::function<void()>& load)
 		lastTime = currentTime;
 		lag += deltaTime;
 
-		doContinue = input.ProcessInput();
+		doContinue = input.ProcessInput(deltaTime);
 		while (lag >= static_cast<float>(m_FixedTimeStep / 1000.f))
 		{
 			// FixedUpdate here if needed
@@ -111,4 +111,9 @@ void dae::Minigin::Run(const std::function<void()>& load)
 		const auto sleepTime = milliseconds(m_MsPerFrame) - duration_cast<milliseconds>(high_resolution_clock::now() - currentTime);
 		std::this_thread::sleep_for(sleepTime);
 	}
+}
+
+SDL_Window* dae::Minigin::GetWindow()
+{
+	return g_window;
 }
