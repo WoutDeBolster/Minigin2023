@@ -8,7 +8,7 @@
 //	class ImguiComp : public BaseComponent
 //	{
 //	public:
-//		ImguiComp(std::shared_ptr<GameObject> pOwner, SDL_Window* pWindow);
+//		ImguiComp(std::weak_ptr<GameObject> pOwner, SDL_Window* pWindow);
 //		virtual ~ImguiComp();
 //
 //		ImguiComp(const ImguiComp&) = delete;

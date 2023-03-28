@@ -3,7 +3,16 @@
 #include "ResourceManager.h"
 #include "Renderer.h"
 #include "BaseComponent.h"
-#pragma warning( disable : 4172) // todo: vraag waarom dit er is (versta dit niet 100%)
+
+dae::GameObject::GameObject()
+{
+}
+
+void dae::GameObject::Initialize()
+{
+	m_pTransfrom = std::make_shared<TransformComp>(shared_from_this());
+	AddComponent(m_pTransfrom);
+}
 
 void dae::GameObject::Update(float deltaTime)
 {
@@ -11,10 +20,6 @@ void dae::GameObject::Update(float deltaTime)
 	{
 		m_Components[i]->Update(deltaTime);
 	}
-
-	UpdateWorldPosition();
-	UpdateWorldRotation();
-	UpdateWorldScale();
 }
 
 void dae::GameObject::Render() const
@@ -25,142 +30,19 @@ void dae::GameObject::Render() const
 	}
 }
 
-void dae::GameObject::UpdateWorldPosition()
-{
-	auto transfrom = GetComponent<TransformComp>();
-
-	if (transfrom->IsPosDirty())
-	{
-		if (m_Parent.lock() == nullptr)
-		{
-			SetWorldPosition(transfrom->GetLocalPosition().x, transfrom->GetLocalPosition().y);
-		}
-		else
-		{
-			SetWorldPosition
-			(
-				m_Parent.lock().get()->GetWorldPosition().x + transfrom->GetLocalPosition().x,
-				m_Parent.lock().get()->GetWorldPosition().y + transfrom->GetLocalPosition().y
-			);
-		}
-		transfrom->SetPosClean();
-	}
-}
-
-void dae::GameObject::UpdateWorldRotation()
-{
-	auto transfrom = GetComponent<TransformComp>();
-
-	if (transfrom->IsRotDirty())
-	{
-		if (m_Parent.lock() == nullptr)
-		{
-			SetWorldRotation(transfrom->GetLocalRotation().x, transfrom->GetLocalRotation().y);
-		}
-		else
-		{
-			SetWorldRotation
-			(
-				m_Parent.lock().get()->GetWorldRotation().x + transfrom->GetLocalRotation().x,
-				m_Parent.lock().get()->GetWorldRotation().y + transfrom->GetLocalRotation().y
-			);
-		}
-		transfrom->SetRotClean();
-	}
-}
-
-void dae::GameObject::UpdateWorldScale()
-{
-	auto transfrom = GetComponent<TransformComp>();
-
-	if (transfrom->IsScaleDirty())
-	{
-		if (m_Parent.lock() == nullptr)
-		{
-			SetWorldScale(transfrom->GetLocalScale().x, transfrom->GetLocalScale().y);
-		}
-		else
-		{
-			SetWorldScale
-			(
-				m_Parent.lock().get()->GetWorldScale().x + transfrom->GetLocalScale().x,
-				m_Parent.lock().get()->GetWorldScale().y + transfrom->GetLocalScale().y
-			);
-		}
-		transfrom->SetScaleClean();
-	}
-}
-
-void dae::GameObject::SetWorldPosition(float x, float y)
-{
-	GetComponent<TransformComp>()->SetWorldPosition(x, y, 0.f);
-}
-
-void dae::GameObject::SetWorldRotation(float x, float y)
-{
-	GetComponent<TransformComp>()->SetWorldRotation(x, y, 0.f);
-}
-
-void dae::GameObject::SetWorldScale(float x, float y)
-{
-	GetComponent<TransformComp>()->SetWorldScale(x, y, 0.f);
-}
-
 void dae::GameObject::SetLocalPosition(float x, float y)
 {
-	GetComponent<TransformComp>()->SetLocalPosition(x, y, 0.f);
+	m_pTransfrom->SetLocalPosition(x, y, 0.f);
 }
 
-void dae::GameObject::SetLocalRotation(float x, float y)
+const glm::vec3& dae::GameObject::GetWorldPosition() const
 {
-	GetComponent<TransformComp>()->SetLocalRotation(x, y, 0.f);
-}
-
-void dae::GameObject::SetLocalScale(float x, float y)
-{
-	GetComponent<TransformComp>()->SetLocalScale(x, y, 0.f);
-}
-
-const glm::vec3& dae::GameObject::GetWorldPosition()
-{
-	if (m_Parent.lock() != nullptr)
-	{
-		return m_Parent.lock().get()->GetWorldPosition() + GetLocalPosition();
-	}
-	return GetLocalPosition();
-}
-
-const glm::vec3& dae::GameObject::GetWorldRotation()
-{
-	if (m_Parent.lock() != nullptr)
-	{
-		return m_Parent.lock().get()->GetWorldRotation() + GetLocalRotation();
-	}
-	return GetLocalRotation();
-}
-
-const glm::vec3& dae::GameObject::GetWorldScale()
-{
-	if (m_Parent.lock() != nullptr)
-	{
-		return m_Parent.lock().get()->GetWorldScale() + GetLocalScale();
-	}
-	return GetLocalScale();
+	return m_pTransfrom->GetWorldPosition();
 }
 
 const glm::vec3& dae::GameObject::GetLocalPosition() const
 {
-	return GetComponent<TransformComp>()->GetLocalPosition();
-}
-
-const glm::vec3& dae::GameObject::GetLocalRotation() const
-{
-	return GetComponent<TransformComp>()->GetLocalRotation();
-}
-
-const glm::vec3& dae::GameObject::GetLocalScale() const
-{
-	return GetComponent<TransformComp>()->GetLocalScale();
+	return m_pTransfrom->GetLocalPosition();
 }
 
 void dae::GameObject::AddComponent(std::shared_ptr<BaseComponent> myComponent)
@@ -173,7 +55,7 @@ void dae::GameObject::RemoveComponent(std::shared_ptr<BaseComponent> myComponent
 	m_Components.erase(std::find(m_Components.begin(), m_Components.end(), myComponent));
 }
 
-void dae::GameObject::SetParent(std::shared_ptr<GameObject> parent, bool keepWorldPos, bool keepWorldRot, bool keepWorldScale)
+void dae::GameObject::SetParent(std::shared_ptr<GameObject> parent, bool keepWorldPos)
 {
 	if (m_Parent.lock() == nullptr)
 	{
@@ -182,37 +64,10 @@ void dae::GameObject::SetParent(std::shared_ptr<GameObject> parent, bool keepWor
 	else
 	{
 		// pos
-		if (keepWorldPos)
+		if (keepWorldPos == false)
 		{
-			SetLocalPosition
-			(
-				GetLocalPosition().x - m_Parent.lock().get()->GetWorldPosition().x,
-				GetLocalPosition().y - m_Parent.lock().get()->GetWorldPosition().y
-			);
+			m_pTransfrom->SetPositionDirty();
 		}
-		GetComponent<TransformComp>()->SetPosDirty();
-
-		// rot
-		if (keepWorldRot)
-		{
-			SetLocalRotation
-			(
-				GetLocalRotation().x - m_Parent.lock().get()->GetWorldRotation().x,
-				GetLocalRotation().y - m_Parent.lock().get()->GetWorldRotation().y
-			);
-		}
-		GetComponent<TransformComp>()->SetRotDirty();
-
-		// scale
-		if (keepWorldScale)
-		{
-			SetLocalScale
-			(
-				GetLocalScale().x - m_Parent.lock().get()->GetWorldScale().x,
-				GetLocalScale().y - m_Parent.lock().get()->GetWorldScale().y
-			);
-		}
-		GetComponent<TransformComp>()->SetScaleDirty();
 	}
 
 	if (m_Parent.lock() != nullptr)
@@ -226,9 +81,9 @@ void dae::GameObject::SetParent(std::shared_ptr<GameObject> parent, bool keepWor
 	}
 }
 
-std::shared_ptr<dae::GameObject> dae::GameObject::GetParent() const
+std::weak_ptr<dae::GameObject> dae::GameObject::GetParent() const
 {
-	return m_Parent.lock();
+	return m_Parent;
 }
 
 size_t dae::GameObject::GetChildCount() const

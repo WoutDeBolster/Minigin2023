@@ -6,7 +6,7 @@
 #include "Texture2D.h"
 #include "GameObject.h"
 
-dae::TextComp::TextComp(std::shared_ptr<GameObject> pOwner, const std::string& text,
+dae::TextComp::TextComp(std::weak_ptr<GameObject> pOwner, const std::string& text,
 	const std::shared_ptr<Font> font, const SDL_Color& color)
 	: BaseComponent(pOwner)
 	, m_NeedsUpdate(true)

@@ -16,7 +16,7 @@ void dae::MoveCommand::Execute(float deltaTime)
 	// move pos game obejct
 	currentPos.x += m_Speed * m_Dir.x * deltaTime;
 	currentPos.y += m_Speed * m_Dir.y * deltaTime;
-	objTransform->SetWorldPosition(currentPos.x, currentPos.y, currentPos.z);
+	objTransform->SetLocalPosition(currentPos.x, currentPos.y, currentPos.z);
 }
 
 void dae::MoveCommand::Undo(float)

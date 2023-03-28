@@ -33,9 +33,14 @@ GamePad::GamePad(unsigned int controllerIndex)
 	pImpl = new GamePadImpl(controllerIndex);
 }
 
-void GamePad::Update()
+dae::GamePad::~GamePad()
 {
 	delete pImpl;
+}
+
+void GamePad::Update()
+{
+	pImpl->Update();
 }
 
 bool GamePad::IsDown(ControllerButton button)

@@ -7,7 +7,7 @@ namespace dae
 	class BaseComponent
 	{
 	public:
-		BaseComponent(std::shared_ptr<GameObject> pOwner);
+		BaseComponent(std::weak_ptr<GameObject> pOwner);
 		virtual ~BaseComponent() = default;
 
 		BaseComponent(const BaseComponent&) = delete;

@@ -1,7 +1,11 @@
 #include "TransformComp.h"
+#include "GameObject.h"
 
-dae::TransformComp::TransformComp(std::shared_ptr<GameObject> pOwner)
-	:BaseComponent(pOwner)
+dae::TransformComp::TransformComp(std::weak_ptr<GameObject> pOwner)
+	: BaseComponent(pOwner)
+	, m_LocalPosition{ 0.f, 0.f, 0.f }
+	, m_WorldPosition{ 0.f, 0.f, 0.f }
+	, m_IsDirty{ false }
 {
 }
 
@@ -9,122 +13,50 @@ void dae::TransformComp::Update(float)
 {
 }
 
-const glm::vec3& dae::TransformComp::GetWorldPosition() const
-{
-	return m_WorldPosition;
-}
-
-const glm::vec3& dae::TransformComp::GetWorldRotation() const
-{
-	return m_WorldRotation;
-}
-
-const glm::vec3& dae::TransformComp::GetWorldScale() const
-{
-	return m_WorldScale;
-}
-
 const glm::vec3& dae::TransformComp::GetLocalPosition() const
 {
 	return m_LocalPosition;
 }
 
-const glm::vec3& dae::TransformComp::GetLocalRotation() const
+const glm::vec3& dae::TransformComp::GetWorldPosition()
 {
-	return m_LocalRotation;
+	if (m_IsDirty)
+	{
+		UpdateWorldPosition();
+	}
+
+	return m_WorldPosition;
 }
 
-const glm::vec3& dae::TransformComp::GetLocalScale() const
-{
-	return m_LocalScale;
-}
-
-void dae::TransformComp::SetWorldPosition(float x, float y, float z)
-{
-	m_WorldPosition.x = x;
-	m_WorldPosition.y = y;
-	m_WorldPosition.z = z;
-}
-
-void dae::TransformComp::SetWorldRotation(float x, float y, float z)
-{
-	m_WorldRotation.x = x;
-	m_WorldRotation.y = y;
-	m_WorldRotation.z = z;
-}
-
-void dae::TransformComp::SetWorldScale(float x, float y, float z)
-{
-	m_WorldScale.x = x;
-	m_WorldScale.y = y;
-	m_WorldScale.z = z;
-}
-
-void dae::TransformComp::SetLocalPosition(float x, float y, float z)
+const void dae::TransformComp::SetLocalPosition(float x, float y, float z)
 {
 	m_LocalPosition.x = x;
 	m_LocalPosition.y = y;
 	m_LocalPosition.z = z;
-	m_PosNeedsUpdate = true;
+
+	SetPositionDirty();
 }
 
-void dae::TransformComp::SetLocalRotation(float x, float y, float z)
+const void dae::TransformComp::SetLocalPosition(const glm::vec3& position)
 {
-	m_LocalRotation.x = x;
-	m_LocalRotation.y = y;
-	m_LocalRotation.z = z;
-	m_RotNeedsUpdate = true;
+	SetLocalPosition(position.x, position.y, position.z);
 }
 
-void dae::TransformComp::SetLocalScale(float x, float y, float z)
+const void dae::TransformComp::SetPositionDirty()
 {
-	m_LocalScale.x = x;
-	m_LocalScale.y = y;
-	m_LocalScale.z = z;
-	m_ScaleNeedsUpdate = true;
+	m_IsDirty = true;
 }
 
-void dae::TransformComp::SetPosDirty()
+void dae::TransformComp::UpdateWorldPosition()
 {
-	m_PosNeedsUpdate = true;
-}
+	const auto componentOwner = m_pGameObject.lock().get();
+	if (componentOwner->GetParent().lock() == nullptr)
+		m_WorldPosition = m_LocalPosition;
+	else
+	{
+		const auto parentWorldPos = componentOwner->GetParent().lock()->GetWorldPosition();
 
-void dae::TransformComp::SetRotDirty()
-{
-	m_RotNeedsUpdate = true;
-}
-
-void dae::TransformComp::SetScaleDirty()
-{
-	m_ScaleNeedsUpdate = true;
-}
-
-void dae::TransformComp::SetPosClean()
-{
-	m_PosNeedsUpdate = false;
-}
-
-void dae::TransformComp::SetRotClean()
-{
-	m_RotNeedsUpdate = false;
-}
-
-void dae::TransformComp::SetScaleClean()
-{
-	m_ScaleNeedsUpdate = false;
-}
-
-const bool dae::TransformComp::IsPosDirty() const
-{
-	return m_PosNeedsUpdate;
-}
-
-const bool dae::TransformComp::IsRotDirty() const
-{
-	return m_RotNeedsUpdate;
-}
-
-const bool dae::TransformComp::IsScaleDirty() const
-{
-	return m_ScaleNeedsUpdate;
+		m_WorldPosition = parentWorldPos + m_LocalPosition;
+	}
+	m_IsDirty = false;
 }

@@ -38,7 +38,7 @@
 //std::array<GameObject3DAlt, 10000000> m_ArrayEx2GOA{};
 //// =========================
 //
-//dae::ImguiComp::ImguiComp(std::shared_ptr<GameObject> pOwner, SDL_Window* pWindow)
+//dae::ImguiComp::ImguiComp(std::weak_ptr<GameObject> pOwner, SDL_Window* pWindow)
 //	: BaseComponent(pOwner)
 //	, m_pWindow{ pWindow }
 //{

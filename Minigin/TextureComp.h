@@ -8,7 +8,7 @@ namespace dae
 	class TextureComp final : public BaseComponent
 	{
 	public:
-		TextureComp(std::shared_ptr<GameObject> pOwner, const std::string& filename);
+		TextureComp(std::weak_ptr<GameObject> pOwner, const std::string& filename);
 		~TextureComp() = default;
 
 		TextureComp(const TextureComp&) = delete;
@@ -20,7 +20,6 @@ namespace dae
 		virtual void Render() const override;
 
 		void SetTexture(const std::string& filename);
-
 	private:
 		std::shared_ptr<Texture2D> m_Texture{};
 	};

@@ -5,7 +5,7 @@
 #include "ResourceManager.h"
 #include "TextureComp.h"
 
-dae::TextureComp::TextureComp(std::shared_ptr<GameObject> pOwner, const std::string& filename)
+dae::TextureComp::TextureComp(std::weak_ptr<GameObject> pOwner, const std::string& filename)
 	:BaseComponent(pOwner)
 {
 	SetTexture(filename);

@@ -28,7 +28,7 @@ namespace dae
 		};
 
 		explicit GamePad(unsigned int controllerIndex);
-		~GamePad() = default;
+		~GamePad();
 
 		void Update();
 

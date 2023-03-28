@@ -10,7 +10,7 @@ namespace dae
 	class TextComp final : public BaseComponent
 	{
 	public:
-		explicit TextComp(std::shared_ptr<GameObject> pOwner, const std::string& text,
+		explicit TextComp(std::weak_ptr<GameObject> pOwner, const std::string& text,
 			std::shared_ptr<Font> font, const SDL_Color& color);
 		virtual ~TextComp() = default;
 

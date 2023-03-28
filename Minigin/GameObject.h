@@ -9,7 +9,7 @@ namespace dae
 	class GameObject final : public std::enable_shared_from_this<GameObject>
 	{
 	public:
-		GameObject() = default;
+		GameObject();
 		~GameObject() = default;
 
 		GameObject(const GameObject& other) = delete;
@@ -17,28 +17,14 @@ namespace dae
 		GameObject& operator=(const GameObject& other) = delete;
 		GameObject& operator=(GameObject&& other) = delete;
 
+		void Initialize();
 		virtual void Update(float deltaTime);
 		virtual void Render() const;
 
-		void UpdateWorldPosition();
-		void UpdateWorldRotation();
-		void UpdateWorldScale();
-
-		const glm::vec3& GetWorldPosition();
-		const glm::vec3& GetWorldRotation();
-		const glm::vec3& GetWorldScale();
-
+		const glm::vec3& GetWorldPosition() const;
 		const glm::vec3& GetLocalPosition() const;
-		const glm::vec3& GetLocalRotation() const;
-		const glm::vec3& GetLocalScale() const;
-
-		void SetWorldPosition(float x, float y);
-		void SetWorldRotation(float x, float y);
-		void SetWorldScale(float x, float y);
 
 		void SetLocalPosition(float x, float y);
-		void SetLocalRotation(float x, float y);
-		void SetLocalScale(float x, float y);
 
 		// components
 		void AddComponent(std::shared_ptr<BaseComponent> myComponent);
@@ -58,8 +44,8 @@ namespace dae
 		void RemoveComponent(std::shared_ptr<BaseComponent> myComponent);
 
 		// parent
-		void SetParent(std::shared_ptr<GameObject> parent, bool keepWorldPos = true, bool keepWorldRot = true, bool keepWorldScale = true);
-		std::shared_ptr<GameObject> GetParent() const;
+		void SetParent(std::shared_ptr<GameObject> parent, bool keepWorldPos = false);
+		std::weak_ptr<GameObject> GetParent() const;
 
 		// child
 		size_t GetChildCount() const;
@@ -69,8 +55,10 @@ namespace dae
 		void AddChild(std::shared_ptr<GameObject> child);
 
 	private:
+
 		std::vector<std::shared_ptr<BaseComponent>> m_Components;
 
+		std::shared_ptr<TransformComp> m_pTransfrom;
 		std::weak_ptr<GameObject> m_Parent;
 		std::vector<std::shared_ptr<GameObject>> m_Childeren;
 	};

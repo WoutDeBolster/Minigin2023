@@ -1,6 +1,6 @@
 #include "BaseComponent.h"
 
-dae::BaseComponent::BaseComponent(std::shared_ptr<GameObject> pOwner)
+dae::BaseComponent::BaseComponent(std::weak_ptr<GameObject> pOwner)
 {
 	m_pGameObject = pOwner;
 }

@@ -7,7 +7,7 @@ namespace dae
 	class FPSComp final : public BaseComponent
 	{
 	public:
-		FPSComp(std::shared_ptr<GameObject> pOwner);
+		FPSComp(std::weak_ptr<GameObject> pOwner);
 		~FPSComp() = default;
 
 		FPSComp(const FPSComp&) = delete;

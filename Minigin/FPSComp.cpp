@@ -3,7 +3,7 @@
 #include "TextComp.h"
 #include <string>
 
-dae::FPSComp::FPSComp(std::shared_ptr<GameObject> pOwner)
+dae::FPSComp::FPSComp(std::weak_ptr<GameObject> pOwner)
 	:BaseComponent(pOwner)
 {
 }
