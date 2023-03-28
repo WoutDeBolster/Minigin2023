@@ -62,4 +62,5 @@ bool dae::InputManager::ProcessInput(float deltaTime)
 
 void dae::InputManager::SetButtonCommand(unsigned int controllerIndex, GamePad::ControllerButton button, Command* command, InputType inputType)
 {
+	m_Commands[std::make_pair(controllerIndex, button)] = std::make_pair(std::unique_ptr<Command>(command), inputType);
 }
