@@ -8,7 +8,7 @@ dae::GameObject::GameObject()
 {
 }
 
-void dae::GameObject::Initialize()
+void dae::GameObject::Initialize() // TODO: dit kan beter zou automatis moeten initen en niet aaltijd bij elk obj moeten op geroepen worden
 {
 	m_pTransfrom = std::make_shared<TransformComp>(shared_from_this());
 	AddComponent(m_pTransfrom);

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -179,11 +179,15 @@
     <PostBuildEvent />
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Achievements.h" />
+    <ClInclude Include="ActorComp.h" />
     <ClInclude Include="BaseComponent.h" />
     <ClInclude Include="Command.h" />
     <ClInclude Include="Font.h" />
     <ClInclude Include="FPSComp.h" />
     <ClInclude Include="GameObject.h" />
+    <ClInclude Include="HealthBoardComp.h" />
+    <ClInclude Include="HealthComp.h" />
     <ClInclude Include="imconfig.h" />
     <ClInclude Include="imgui.h" />
     <ClInclude Include="ImguiComp.h" />
@@ -197,11 +201,15 @@
     <ClInclude Include="InputManager.h" />
     <ClInclude Include="Minigin.h" />
     <ClInclude Include="ObjReader.h" />
+    <ClInclude Include="Observer.h" />
+    <ClInclude Include="PointsComp.h" />
     <ClInclude Include="Renderer.h" />
     <ClInclude Include="ResourceManager.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="SceneManager.h" />
+    <ClInclude Include="ScoreBoardComp.h" />
     <ClInclude Include="Singleton.h" />
+    <ClInclude Include="Subject.h" />
     <ClInclude Include="TextComp.h" />
     <ClInclude Include="Texture2D.h" />
     <ClInclude Include="TextureComp.h" />
@@ -209,11 +217,15 @@
     <ClInclude Include="GamePad.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Achievements.cpp" />
+    <ClCompile Include="ActorComp.cpp" />
     <ClCompile Include="BaseComponent.cpp" />
     <ClCompile Include="Command.cpp" />
     <ClCompile Include="Font.cpp" />
     <ClCompile Include="FPSComp.cpp" />
     <ClCompile Include="GameObject.cpp" />
+    <ClCompile Include="HealthBoardComp.cpp" />
+    <ClCompile Include="HealthComp.cpp" />
     <ClCompile Include="imgui.cpp" />
     <ClCompile Include="ImguiComp.cpp" />
     <ClCompile Include="imgui_demo.cpp">
@@ -257,10 +269,14 @@
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Minigin.cpp" />
     <ClCompile Include="ObjReader.cpp" />
+    <ClCompile Include="Observer.cpp" />
+    <ClCompile Include="PointsComp.cpp" />
     <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="ResourceManager.cpp" />
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="SceneManager.cpp" />
+    <ClCompile Include="ScoreBoardComp.cpp" />
+    <ClCompile Include="Subject.cpp" />
     <ClCompile Include="TextComp.cpp" />
     <ClCompile Include="Texture2D.cpp" />
     <ClCompile Include="TextureComp.cpp" />
