@@ -17,7 +17,7 @@ void dae::TextureComp::Update(float)
 
 void dae::TextureComp::Render() const
 {
-	const auto& pos = m_pGameObject.lock().get()->GetWorldPosition();
+	const auto& pos = GetGameObject().lock().get()->GetWorldPosition();
 	Renderer::GetInstance().RenderTexture(*m_Texture, pos.x, pos.y);
 }
 

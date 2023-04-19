@@ -16,10 +16,13 @@ namespace dae
 		BaseComponent& operator= (const BaseComponent&&) = delete;
 
 		virtual void Update(float deltaTime) = 0;
+		virtual void FixedUpdate(float fixedTime);
 		virtual void Render() const;
 
 	protected:
-		// todo: make getter vfor owner and put owner in private
+		std::weak_ptr<GameObject> GetGameObject() const;
+
+	private:
 		std::weak_ptr<GameObject> m_pGameObject;
 	};
 }

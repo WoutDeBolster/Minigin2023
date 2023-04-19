@@ -12,7 +12,7 @@ void dae::ActorComp::Update(float)
 
 void dae::ActorComp::Die()
 {
-	m_pActorChanged.get()->Notify(*m_pGameObject.lock().get(), Event::ActorDie);
+	m_pActorChanged.get()->Notify(*GetGameObject().lock().get(), Event::ActorDie);
 }
 
 dae::Subject* dae::ActorComp::GetActorSubject() const

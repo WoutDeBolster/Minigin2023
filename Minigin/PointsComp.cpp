@@ -14,7 +14,7 @@ void dae::PointsComp::Update(float)
 void dae::PointsComp::AddPoints(int amount)
 {
 	m_Points += amount;
-	m_pPointsChanged.get()->Notify(*m_pGameObject.lock().get(), Event::GainPoints);
+	m_pPointsChanged.get()->Notify(*GetGameObject().lock().get(), Event::GainPoints);
 }
 
 int dae::PointsComp::GetPoints()

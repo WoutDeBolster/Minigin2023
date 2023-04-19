@@ -32,6 +32,14 @@ void Scene::Update(float deltaTime)
 	}
 }
 
+void dae::Scene::FixedUpdate(float fixedTime)
+{
+	for (auto& object : m_objects)
+	{
+		object->FixedUpdate(fixedTime);
+	}
+}
+
 void Scene::Render() const
 {
 	for (const auto& object : m_objects)

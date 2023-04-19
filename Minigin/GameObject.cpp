@@ -22,6 +22,14 @@ void dae::GameObject::Update(float deltaTime)
 	}
 }
 
+void dae::GameObject::FixedUpdate(float fixedTime)
+{
+	for (size_t i = 0; i < m_Components.size(); i++)
+	{
+		m_Components[i]->FixedUpdate(fixedTime);
+	}
+}
+
 void dae::GameObject::Render() const
 {
 	for (size_t i = 0; i < m_Components.size(); i++)

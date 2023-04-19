@@ -18,12 +18,12 @@ void dae::HealthComp::DistractHealth(int amount)
 	{
 		m_Health -= amount;
 		// notify scoreComp
-		m_pHealthChanged.get()->Notify(*m_pGameObject.lock().get(), Event::HealthChanged);
+		m_pHealthChanged.get()->Notify(*GetGameObject().lock().get(), Event::HealthChanged);
 	}
 	else
 	{
 		// notify AchievementComp
-		m_pHealthChanged.get()->Notify(*m_pGameObject.lock().get(), Event::ActorDie);
+		m_pHealthChanged.get()->Notify(*GetGameObject().lock().get(), Event::ActorDie);
 	}
 }
 

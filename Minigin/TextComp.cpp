@@ -42,7 +42,7 @@ void dae::TextComp::Render() const
 {
 	if (m_textTexture != nullptr)
 	{
-		const auto& pos = m_pGameObject.lock().get()->GetWorldPosition();
+		const auto& pos = GetGameObject().lock().get()->GetWorldPosition();
 		Renderer::GetInstance().RenderTexture(*m_textTexture, pos.x, pos.y);
 	}
 }

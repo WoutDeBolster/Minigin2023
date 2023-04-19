@@ -49,7 +49,7 @@ const void dae::TransformComp::SetPositionDirty()
 
 void dae::TransformComp::UpdateWorldPosition()
 {
-	const auto componentOwner = m_pGameObject.lock().get();
+	const auto componentOwner = GetGameObject().lock().get();
 	if (componentOwner->GetParent().lock() == nullptr)
 		m_WorldPosition = m_LocalPosition;
 	else

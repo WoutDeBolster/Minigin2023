@@ -19,6 +19,7 @@ namespace dae
 
 		void Initialize();
 		virtual void Update(float deltaTime);
+		virtual void FixedUpdate(float fixedTime);
 		virtual void Render() const;
 
 		const glm::vec3& GetWorldPosition() const;

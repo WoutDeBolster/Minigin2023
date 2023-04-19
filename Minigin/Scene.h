@@ -19,6 +19,7 @@ namespace dae
 		void RemoveAll();
 
 		void Update(float deltaTime);
+		void FixedUpdate(float fixedTime);
 		void Render() const;
 
 	private:
