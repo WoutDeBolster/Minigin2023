@@ -6,6 +6,10 @@ dae::BaseComponent::BaseComponent(std::weak_ptr<GameObject> pOwner)
 
 }
 
+void dae::BaseComponent::FixedUpdate(float)
+{
+}
+
 void dae::BaseComponent::Render() const
 {
 }

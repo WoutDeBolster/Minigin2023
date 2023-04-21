@@ -26,5 +26,9 @@ namespace dae
 		void Unlock(Achievement achievement);
 
 		bool m_NoONeElseDied{ true };
+
+		// achievements
+		bool m_WinUnlocked{ false };
+		bool m_FirstBloodUnlocked{ false };
 	};
 }

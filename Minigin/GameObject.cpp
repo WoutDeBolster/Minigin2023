@@ -65,6 +65,22 @@ void dae::GameObject::RemoveComponent(std::shared_ptr<BaseComponent> myComponent
 
 void dae::GameObject::SetParent(std::shared_ptr<GameObject> parent, bool keepWorldPos)
 {
+	// Remove itself as a child from the previous parent(if any).
+	if (m_Parent.lock() != nullptr)
+	{
+		m_Parent.lock().get()->RemoveChild(static_cast<std::shared_ptr<GameObject>>(this));
+	}
+
+	// Set the given parent on itself.
+	m_Parent = parent;
+
+	// Add itself as a child to the given parent.
+	if (m_Parent.lock() != nullptr)
+	{
+		m_Parent.lock().get()->AddChild(static_cast<std::shared_ptr<GameObject>>(this));
+	}
+
+	// Update position
 	if (m_Parent.lock() == nullptr)
 	{
 		SetLocalPosition(GetWorldPosition().x, GetWorldPosition().y);
@@ -76,16 +92,6 @@ void dae::GameObject::SetParent(std::shared_ptr<GameObject> parent, bool keepWor
 		{
 			m_pTransfrom->SetPositionDirty();
 		}
-	}
-
-	if (m_Parent.lock() != nullptr)
-	{
-		m_Parent.lock().get()->RemoveChild(static_cast<std::shared_ptr<GameObject>>(this));
-	}
-	m_Parent = parent;
-	if (m_Parent.lock() != nullptr)
-	{
-		m_Parent.lock().get()->AddChild(static_cast<std::shared_ptr<GameObject>>(this));
 	}
 }
 
@@ -121,17 +127,34 @@ void dae::GameObject::RemoveChild(size_t idx)
 
 void dae::GameObject::RemoveChild(std::shared_ptr<GameObject> child)
 {
-	child->SetParent(nullptr);
+	// Remove the given child from the children list
 	for (size_t i = 0; i < child->GetChildCount(); ++i)
 	{
 		std::shared_ptr<GameObject> currentChild{ child->GetChildAt(i) };
 		currentChild.get()->RemoveChild(i);
 	}
 	m_Childeren.erase(std::find(m_Childeren.begin(), m_Childeren.end(), child));
+
+	// Remove itself as a parent of the child.
+	child->SetParent(nullptr);
+
+	// Update position, rotation and scale
 }
 
 void dae::GameObject::AddChild(std::shared_ptr<GameObject> child)
 {
+	// Remove the given child from the child's previous parent
+	auto childsParent = child->GetParent();
+	if (childsParent.lock() != nullptr)
+	{
+		childsParent.lock()->RemoveChild(child);
+	}
+
+	// Set itself as parent of the child
 	child.get()->SetParent(m_Parent.lock());
+
+	// Add the child to its children list.
 	m_Childeren.push_back(child);
+
+	// Update position
 }

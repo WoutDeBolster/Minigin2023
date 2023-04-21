@@ -30,10 +30,18 @@ void dae::Achievements::Unlock(Achievement achievement)
 	switch (achievement)
 	{
 	case dae::Achievement::Win:
-		std::cout << "YOU WIN!" << std::endl;
+		if (!m_WinUnlocked)
+		{
+			std::cout << "YOU WIN!" << std::endl;
+			m_WinUnlocked = true;
+		}
 		break;
 	case dae::Achievement::FirstBlood:
-		std::cout << "FIRTS BLOOD!" << std::endl;
+		if (!m_FirstBloodUnlocked)
+		{
+			std::cout << "FIRTS BLOOD!" << std::endl;
+			m_FirstBloodUnlocked = true;
+		}
 		break;
 	default:
 		break;
