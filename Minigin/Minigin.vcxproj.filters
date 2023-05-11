@@ -153,6 +153,12 @@
     <ClInclude Include="HealthBoardComp.h">
       <Filter>Header Files\Components</Filter>
     </ClInclude>
+    <ClInclude Include="KeyBoard.h">
+      <Filter>Header Files\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="SpriteComp.h">
+      <Filter>Header Files\Components</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ResourceManager.cpp">
@@ -259,6 +265,12 @@
     </ClCompile>
     <ClCompile Include="imgui.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="KeyBoard.cpp">
+      <Filter>Source Files\Input</Filter>
+    </ClCompile>
+    <ClCompile Include="SpriteComp.cpp">
+      <Filter>Source Files\Components</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

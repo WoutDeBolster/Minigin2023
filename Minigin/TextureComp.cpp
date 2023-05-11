@@ -3,10 +3,9 @@
 #include "Texture2D.h"
 #include "Renderer.h"
 #include "ResourceManager.h"
-#include "TextureComp.h"
 
 dae::TextureComp::TextureComp(std::weak_ptr<GameObject> pOwner, const std::string& filename)
-	:BaseComponent(pOwner)
+	: BaseComponent(pOwner)
 {
 	SetTexture(filename);
 }

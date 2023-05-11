@@ -9,13 +9,16 @@ dae::MoveCommand::MoveCommand(std::shared_ptr<GameObject> object, float speed, g
 
 void dae::MoveCommand::Execute(float deltaTime)
 {
-	auto objTransform{ m_pObj.lock().get()->GetComponent<TransformComp>() };
+	auto objTransform{ m_pObj.lock()->GetComponent<TransformComp>() };
 	glm::vec3 currentPos{ objTransform->GetWorldPosition() };
 
 	// move pos game obejct
 	currentPos.x += m_Speed * m_Dir.x * deltaTime;
 	currentPos.y += m_Speed * m_Dir.y * deltaTime;
 	objTransform->SetLocalPosition(currentPos.x, currentPos.y, currentPos.z);
+
+	// sprite rotation and switching
+
 }
 
 void dae::Command::Undo(float)

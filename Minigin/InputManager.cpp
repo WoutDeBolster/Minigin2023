@@ -23,7 +23,7 @@ bool dae::InputManager::ProcessInput(float deltaTime)
 	{
 		m_pControllers[i]->Update();
 
-		for (auto CommandsIterator = m_Commands.begin(); CommandsIterator != m_Commands.end(); ++CommandsIterator)
+		for (auto CommandsIterator = m_GamePadCommands.begin(); CommandsIterator != m_GamePadCommands.end(); ++CommandsIterator)
 		{
 			switch (CommandsIterator->second.second)
 			{
@@ -57,10 +57,20 @@ bool dae::InputManager::ProcessInput(float deltaTime)
 		}
 	}
 
+	//for (size_t i = 0; i < m_pKeyboards.size(); ++i)
+	//{
+
+	//}
+
 	return true;
 }
 
-void dae::InputManager::SetButtonCommand(unsigned int controllerIndex, GamePad::ControllerButton button, Command* command, InputType inputType)
+void dae::InputManager::SetGamePadCommand(unsigned int controllerIndex, GamePad::ControllerButton button, Command* command, InputType inputType)
 {
-	m_Commands[std::make_pair(controllerIndex, button)] = std::make_pair(std::unique_ptr<Command>(command), inputType);
+	m_GamePadCommands[std::make_pair(controllerIndex, button)] = std::make_pair(std::unique_ptr<Command>(command), inputType);
 }
+
+//void dae::InputManager::SetGamePadCommand(unsigned int keyboardIndex, SDL_KeyboardEvent key, Command* command, InputType inputType)
+//{
+//	m_KeyboardCommands[std::make_pair(keyboardIndex, key)] = std::make_pair(std::unique_ptr<Command>(command), inputType);
+//}
