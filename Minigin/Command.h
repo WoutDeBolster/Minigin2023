@@ -2,6 +2,7 @@
 #include "GameObject.h"
 #include "HealthComp.h"
 #include "PointsComp.h"
+#include <iostream>
 
 namespace dae
 {
@@ -46,6 +47,16 @@ namespace dae
 	private:
 		std::shared_ptr<PointsComp> m_Points;
 		int m_AmountGain;
+	};
+
+	class PlaySoundEffectCommand final : public Command
+	{
+	public:
+		PlaySoundEffectCommand(const std::string& fileName);
+
+		void Execute(float deltaTime) override;
+	private:
+		std::string m_File;
 	};
 }
 

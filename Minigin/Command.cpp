@@ -1,4 +1,6 @@
 #include "Command.h"
+#include <iostream>
+#include "SoundSystem.h"
 
 dae::MoveCommand::MoveCommand(std::shared_ptr<GameObject> object, float speed, glm::f32vec2 dir)
 	: m_pObj{ object }
@@ -45,4 +47,16 @@ dae::GainScoreCommand::GainScoreCommand(std::shared_ptr<PointsComp> points, int 
 void dae::GainScoreCommand::Execute(float)
 {
 	m_Points.get()->AddPoints(m_AmountGain);
+}
+
+dae::PlaySoundEffectCommand::PlaySoundEffectCommand(const std::string& fileName)
+	: m_File{ fileName }
+{
+}
+
+void dae::PlaySoundEffectCommand::Execute(float)
+{
+	ServisLocator::GetSoundSystem().InitSoundSystem();
+	ServisLocator::GetSoundSystem().RegisterSound(0, m_File);
+	ServisLocator::GetSoundSystem().play(0, 100);
 }
