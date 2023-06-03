@@ -1,9 +1,10 @@
 #pragma once
 #include <string>
 #include <functional>
-
+struct SDL_Window;
 namespace dae
 {
+
 	class Minigin
 	{
 	public:
