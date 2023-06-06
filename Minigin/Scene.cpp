@@ -1,5 +1,6 @@
 #include "Scene.h"
 #include "GameObject.h"
+#include "CollisionComp.h"
 
 using namespace dae;
 

@@ -162,7 +162,7 @@
     <ClInclude Include="KeyBoard.h">
       <Filter>Header Files\Input</Filter>
     </ClInclude>
-    <ClInclude Include="SpriteComp.h">
+    <ClInclude Include="SpriteAnimatorComp.h">
       <Filter>Header Files\Components</Filter>
     </ClInclude>
     <ClInclude Include="SoundSystem.h">
@@ -278,7 +278,7 @@
     <ClCompile Include="KeyBoard.cpp">
       <Filter>Source Files\Input</Filter>
     </ClCompile>
-    <ClCompile Include="SpriteComp.cpp">
+    <ClCompile Include="SpriteAnimatorComp.cpp">
       <Filter>Source Files\Components</Filter>
     </ClCompile>
     <ClCompile Include="SoundSystem.cpp">

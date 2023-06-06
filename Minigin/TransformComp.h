@@ -22,7 +22,9 @@ namespace dae
 
 		const void SetLocalPosition(float x, float y, float z);
 		const void SetLocalPosition(const glm::vec3& position);
+
 		const void SetPositionDirty();
+		bool IsPositionDirty();
 
 	private:
 		void UpdateWorldPosition();

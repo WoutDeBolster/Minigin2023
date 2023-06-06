@@ -24,3 +24,8 @@ void dae::TextureComp::SetTexture(const std::string& filename)
 {
 	m_Texture = ResourceManager::GetInstance().LoadTexture(filename);
 }
+
+glm::ivec2 dae::TextureComp::GetSize() const
+{
+	return m_Texture->GetSize();
+}

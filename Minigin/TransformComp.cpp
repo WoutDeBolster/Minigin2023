@@ -47,6 +47,11 @@ const void dae::TransformComp::SetPositionDirty()
 	m_IsDirty = true;
 }
 
+bool dae::TransformComp::IsPositionDirty()
+{
+	return m_IsDirty;
+}
+
 void dae::TransformComp::UpdateWorldPosition()
 {
 	const auto componentOwner = GetGameObject().lock().get();
