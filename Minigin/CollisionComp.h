@@ -9,7 +9,7 @@ namespace dae
 	class CollisionComp final : public BaseComponent
 	{
 	public:
-		CollisionComp(std::weak_ptr<GameObject> pOwner, glm::ivec2 textureSize, Scene& scene);
+		CollisionComp(std::weak_ptr<GameObject> pOwner, glm::ivec2 textureSize, std::vector<glm::vec2> objPos);
 		virtual ~CollisionComp() = default;
 
 		CollisionComp(const CollisionComp&) = delete;
@@ -18,9 +18,15 @@ namespace dae
 		CollisionComp& operator= (const CollisionComp&&) = delete;
 
 		void Update(float deltaTime) override;
+
+		bool IsOverlapping();
+		glm::f32vec2 GetHitDir();
 	private:
-		glm::ivec2 m_TexSize;
-		Scene& m_Scene;
+		glm::ivec2 m_ObjTexSize;
+		std::vector<glm::vec2> m_objsPos;
+
+		bool m_IsOverlapping{};
+		glm::f32vec2 m_LastDirection{};
 	};
 }
 

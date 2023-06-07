@@ -19,12 +19,6 @@
     <Filter Include="Source Files\Components">
       <UniqueIdentifier>{1b012eec-448c-4ec3-be01-b6a03f5e03c8}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\FileReadersAndWriters">
-      <UniqueIdentifier>{47d49536-2e9e-474b-bd65-e7d666b98c94}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\FileReadersAndWriters">
-      <UniqueIdentifier>{9150ad73-93f0-495f-ae09-d32ac3b87b09}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\Imgui">
       <UniqueIdentifier>{8f89ddce-0621-4254-b6f0-d519eabe0e35}</UniqueIdentifier>
     </Filter>
@@ -92,9 +86,6 @@
     </ClInclude>
     <ClInclude Include="TransformComp.h">
       <Filter>Header Files\Components</Filter>
-    </ClInclude>
-    <ClInclude Include="ObjReader.h">
-      <Filter>Header Files\FileReadersAndWriters</Filter>
     </ClInclude>
     <ClInclude Include="imstb_truetype.h">
       <Filter>Header Files\Imgui</Filter>
@@ -171,6 +162,12 @@
     <ClInclude Include="AudioClip.h">
       <Filter>Header Files\Sound</Filter>
     </ClInclude>
+    <ClInclude Include="CollisionComp.h">
+      <Filter>Header Files\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerState.h">
+      <Filter>Header Files\Input</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ResourceManager.cpp">
@@ -211,9 +208,6 @@
     </ClCompile>
     <ClCompile Include="FPSComp.cpp">
       <Filter>Source Files\Components</Filter>
-    </ClCompile>
-    <ClCompile Include="ObjReader.cpp">
-      <Filter>Source Files\FileReadersAndWriters</Filter>
     </ClCompile>
     <ClCompile Include="imgui_widgets.cpp">
       <Filter>Source Files\Imgui</Filter>
@@ -286,6 +280,12 @@
     </ClCompile>
     <ClCompile Include="AudioClip.cpp">
       <Filter>Source Files\Sound</Filter>
+    </ClCompile>
+    <ClCompile Include="CollisionComp.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayerState.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

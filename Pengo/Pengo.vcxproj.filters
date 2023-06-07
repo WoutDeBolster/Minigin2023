@@ -13,6 +13,12 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Header Files\FileReadersAndWriters">
+      <UniqueIdentifier>{ee92eaa0-528d-43db-975f-05f6a8de349d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\FileReadersAndWriters">
+      <UniqueIdentifier>{dc565a7e-9641-44d3-8daf-6e82b28ffbf1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Pengo.cpp">
@@ -21,10 +27,16 @@
     <ClCompile Include="Block.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\Minigin\ObjReader.cpp">
+      <Filter>Header Files\FileReadersAndWriters</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Block.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Minigin\ObjReader.h">
+      <Filter>Source Files\FileReadersAndWriters</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

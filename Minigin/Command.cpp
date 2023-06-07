@@ -1,6 +1,8 @@
 #include "Command.h"
 #include <iostream>
 #include "SoundSystem.h"
+#include "CollisionComp.h"
+#include "SpriteAnimatorComp.h"
 
 dae::MoveCommand::MoveCommand(std::shared_ptr<GameObject> object, float speed, glm::f32vec2 dir)
 	: m_pObj{ object }
@@ -11,16 +13,37 @@ dae::MoveCommand::MoveCommand(std::shared_ptr<GameObject> object, float speed, g
 
 void dae::MoveCommand::Execute(float deltaTime)
 {
-	auto objTransform{ m_pObj.lock()->GetComponent<TransformComp>() };
-	glm::vec3 currentPos{ objTransform->GetWorldPosition() };
+	auto objCollisionComp = m_pObj.lock()->GetComponent<CollisionComp>();
+	if (objCollisionComp->GetHitDir() != m_Dir)
+	{
+		auto objTransform{ m_pObj.lock()->GetComponent<TransformComp>() };
+		glm::vec3 currentPos{ objTransform->GetWorldPosition() };
 
-	// move pos game obejct
-	currentPos.x += m_Speed * m_Dir.x * deltaTime;
-	currentPos.y += m_Speed * m_Dir.y * deltaTime;
-	objTransform->SetLocalPosition(currentPos.x, currentPos.y, currentPos.z);
+		// move pos game obejct
+		currentPos.x += m_Speed * m_Dir.x * deltaTime;
+		currentPos.y += m_Speed * m_Dir.y * deltaTime;
+		objTransform->SetLocalPosition(currentPos.x, currentPos.y, currentPos.z);
 
-	// sprite rotation and switching
+		// sprite rotation and switching
+		if (m_Dir == glm::f32vec2{ 0.f, 1.f })
+		{
+			m_pObj.lock()->GetComponent<SpriteAnimatorComp>()->SetDirection(Direction::Down);
+		}
+		else if (m_Dir == glm::f32vec2{ 1.f, 0.f })
+		{
+			m_pObj.lock()->GetComponent<SpriteAnimatorComp>()->SetDirection(Direction::Right);
+		}
+		else if (m_Dir == glm::f32vec2{ 0.f, -1.f })
+		{
+			m_pObj.lock()->GetComponent<SpriteAnimatorComp>()->SetDirection(Direction::Up);
+		}
+		else if (m_Dir == glm::f32vec2{ -1.f, 0.f })
+		{
+			m_pObj.lock()->GetComponent<SpriteAnimatorComp>()->SetDirection(Direction::Left);
+		}
 
+		std::cout << m_pObj.lock()->GetComponent<CollisionComp>()->GetHitDir().x << ", " << m_pObj.lock()->GetComponent<CollisionComp>()->GetHitDir().y << std::endl;
+	}
 }
 
 void dae::Command::Undo(float)

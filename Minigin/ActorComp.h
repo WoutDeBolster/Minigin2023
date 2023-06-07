@@ -15,7 +15,7 @@ namespace dae
 		ActorComp& operator= (const ActorComp&) = delete;
 		ActorComp& operator= (const ActorComp&&) = delete;
 
-		void Update(float fixedTime) override;
+		void Update(float deltaTime) override;
 		void Die();
 
 		Subject* GetActorSubject() const;

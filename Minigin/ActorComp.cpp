@@ -8,6 +8,7 @@ dae::ActorComp::ActorComp(std::shared_ptr<GameObject> pOwner)
 
 void dae::ActorComp::Update(float)
 {
+
 }
 
 void dae::ActorComp::Die()

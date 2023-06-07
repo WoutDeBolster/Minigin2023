@@ -36,7 +36,7 @@ namespace dae
 		Direction m_currentDirection{ Direction::Up };
 		int m_currentSpriteIndex{ 0 };
 
-		bool m_IsMoving{ false };
+		bool m_IsMoving{ true };
 		float m_SpriteTimer{ 0.f };
 	};
 }

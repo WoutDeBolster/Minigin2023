@@ -21,6 +21,8 @@
 #include "ScoreBoardComp.h"
 #include "PointsComp.h"
 #include "ActorComp.h"
+#include "CollisionComp.h"
+#include "SpriteAnimatorComp.h"
 
 // other
 #include "Font.h"
@@ -56,10 +58,10 @@ std::shared_ptr<GameObject> MakePlayer(unsigned int playerIdx, glm::vec2 pos, Sc
 	auto player = std::make_shared<GameObject>();
 	player.get()->Initialize();
 	auto actorPlayer = std::make_shared<ActorComp>(player);
-	auto terxturePlayer = std::make_shared<TextureComp>(player, "Pengo/Pengo_01.png");
+	//auto terxturePlayer = std::make_shared<TextureComp>(player, "Pengo/Pengo_01.png");
 
 	player->AddComponent(actorPlayer);
-	player->AddComponent(terxturePlayer);
+	//player->AddComponent(terxturePlayer);
 
 	player->SetLocalPosition(pos.x, pos.y);
 
@@ -80,12 +82,6 @@ std::shared_ptr<GameObject> MakePlayer(unsigned int playerIdx, glm::vec2 pos, Sc
 	scene.Add(player);
 
 	return player;
-}
-
-void ObserverTest(Scene& scene)
-{
-	// players
-	auto player1 = MakePlayer(0, { 0, 250 }, scene);
 }
 
 void StandertBackground(dae::Scene& scene)
@@ -150,19 +146,24 @@ std::shared_ptr<GameObject> Block(glm::vec2 pos)
 
 void BuildLevel(Scene& scene)
 {
-	float blockSize{ 32.f };
+	std::vector<glm::vec2> pPosBlocks;
+	glm::ivec2 blockSize{ 32, 32 };
 	float borderSize{ 16.f };
 	glm::vec2 LevelOffset{ 26.f, 60.f };
 
 	float gridBlockWidth{ 13.f };
 	float gridBlockHeight{ 15.f };
 
-	for (float y = 0; y < gridBlockHeight; y++)
+	for (int y = 0; y < gridBlockHeight; y++)
 	{
-		for (float x = 0; x < gridBlockWidth; x++)
+		for (int x = 0; x < gridBlockWidth; x++)
 		{
-			auto block = Block({ (x * blockSize) + LevelOffset.x + borderSize , (y * blockSize) + LevelOffset.y + borderSize });
-			scene.Add(block);
+			if (x % 2 == 0 && y % 2 == 0 && x % 3 == 0 && y % 3 == 0)
+			{
+				auto block = Block({ (x * blockSize.x) + LevelOffset.x + borderSize , (y * blockSize.y) + LevelOffset.y + borderSize });
+				pPosBlocks.push_back(block->GetWorldPosition());
+				scene.Add(block);
+			}
 		}
 	}
 
@@ -175,6 +176,20 @@ void BuildLevel(Scene& scene)
 	border->SetLocalPosition(LevelOffset.x, LevelOffset.y);
 
 	scene.Add(border);
+
+	// player and collision
+	auto player1 = MakePlayer(0, { 0, 250 }, scene);
+	auto colComp = std::make_shared<CollisionComp>(player1, blockSize, pPosBlocks);
+
+	// sprites
+	auto spriteComp = std::make_shared<SpriteAnimatorComp>(player1);
+	spriteComp->SetDirectionalSprites(Direction::Down, { "Pengo/Pengo_01.png", "Pengo/Pengo_02.png" });
+	spriteComp->SetDirectionalSprites(Direction::Left, { "Pengo/Pengo_03.png", "Pengo/Pengo_04.png" });
+	spriteComp->SetDirectionalSprites(Direction::Up, { "Pengo/Pengo_05.png", "Pengo/Pengo_06.png" });
+	spriteComp->SetDirectionalSprites(Direction::Right, { "Pengo/Pengo_07.png", "Pengo/Pengo_08.png" });
+
+	player1->AddComponent(colComp);
+	player1->AddComponent(spriteComp);
 }
 
 void load()
@@ -182,7 +197,6 @@ void load()
 	auto& scene = dae::SceneManager::GetInstance().CreateScene("Demo");
 
 	StandertBackground(scene);
-	ObserverTest(scene);
 	BuildLevel(scene);
 }
 
