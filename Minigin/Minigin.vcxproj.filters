@@ -43,6 +43,12 @@
     <Filter Include="Source Files\Sound">
       <UniqueIdentifier>{d94883bb-9306-48d8-a2d6-1227aa44e7fc}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Level">
+      <UniqueIdentifier>{8fd289a5-a1a2-4782-b58b-ffca7a504775}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Level">
+      <UniqueIdentifier>{87f8cfaa-ddc2-4041-9d09-163ee52364f4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Singleton.h">

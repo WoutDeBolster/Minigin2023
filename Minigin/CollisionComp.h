@@ -2,14 +2,14 @@
 #include <glm/glm.hpp>
 #include <memory>
 #include "BaseComponent.h"
-#include "Scene.h"
+#include "GameObject.h"
 
 namespace dae
 {
 	class CollisionComp final : public BaseComponent
 	{
 	public:
-		CollisionComp(std::weak_ptr<GameObject> pOwner, glm::ivec2 textureSize, std::vector<glm::vec2> objPos);
+		CollisionComp(std::weak_ptr<GameObject> pOwner, glm::ivec2 textureSize);
 		virtual ~CollisionComp() = default;
 
 		CollisionComp(const CollisionComp&) = delete;
@@ -17,16 +17,33 @@ namespace dae
 		CollisionComp& operator= (const CollisionComp&) = delete;
 		CollisionComp& operator= (const CollisionComp&&) = delete;
 
+		void AddObject(std::shared_ptr<GameObject> blockObj);
 		void Update(float deltaTime) override;
 
 		bool IsOverlapping();
 		glm::f32vec2 GetHitDir();
 	private:
-		glm::ivec2 m_ObjTexSize;
-		std::vector<glm::vec2> m_objsPos;
+		void PushBlock(float deltaTime);
+		void CheckCollsionWithBlocks();
+		void CheckCollsionPushedObj(std::weak_ptr<GameObject> block, float deltaTime);
+		void BreakBlock(std::weak_ptr<GameObject> block);
 
+		// collision vars
+		glm::ivec2 m_ObjTexSize;
+		std::vector<std::shared_ptr<GameObject>> m_pObjs;
 		bool m_IsOverlapping{};
-		glm::f32vec2 m_LastDirection{};
+		glm::f32vec2 m_HitDirection{};
+
+		// block sliding vars
+		bool m_BlockPushed{ false };
+		float m_SlidingSpeed{ 200.f };
+		glm::f32vec2 m_SlideDir{};
+		std::shared_ptr<GameObject> m_pPuchedObject;
+		glm::f32vec2 m_PuchedObjectOriginalPos{};
+
+		// breaking vars
+		bool m_BlockNextToBlock{ false };
+		float m_SpriteTimer{ 0.f };
 	};
 }
 

@@ -30,6 +30,8 @@ namespace dae
 
 		void SetDirection(const Direction direction);
 		void SetDirectionalSprites(const Direction direction, const std::vector<std::string>& spriteFile);
+		void PlayAnimation(const std::vector<std::string>& spriteFiles, bool KillAfterAnimation);
+
 	private:
 
 		std::unordered_map<Direction, std::vector<std::shared_ptr<Texture2D>>> m_Sprites;
@@ -37,6 +39,7 @@ namespace dae
 		int m_currentSpriteIndex{ 0 };
 
 		bool m_IsMoving{ true };
+		bool m_KillAfterAnimation{ false };
 		float m_SpriteTimer{ 0.f };
 	};
 }

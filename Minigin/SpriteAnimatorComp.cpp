@@ -3,6 +3,8 @@
 #include "Texture2D.h"
 #include "Renderer.h"
 #include "ResourceManager.h"
+#include "SceneManager.h"
+#include "TextureComp.h"
 
 dae::SpriteAnimatorComp::SpriteAnimatorComp(std::weak_ptr<GameObject> pOwner)
 	: BaseComponent(pOwner)
@@ -26,13 +28,21 @@ void dae::SpriteAnimatorComp::Update(float deltaTime)
 			m_SpriteTimer = 0.0f;
 		}
 	}
+
+	if (static_cast<unsigned int>(m_currentSpriteIndex) == m_Sprites[m_currentDirection].size() - 1 && m_KillAfterAnimation)
+	{
+		GetGameObject().lock()->DestryoyGameObject();
+	}
 }
 
 void dae::SpriteAnimatorComp::Render() const
 {
-	const auto& pos = GetGameObject().lock()->GetWorldPosition();
-	const auto currentSprite = m_Sprites.at(m_currentDirection)[m_currentSpriteIndex];
-	Renderer::GetInstance().RenderTexture(*currentSprite, pos.x, pos.y);
+	if (!m_Sprites.at(m_currentDirection).empty())
+	{
+		const auto& pos = GetGameObject().lock()->GetWorldPosition();
+		const auto currentSprite = m_Sprites.at(m_currentDirection)[m_currentSpriteIndex];
+		Renderer::GetInstance().RenderTexture(*currentSprite, pos.x, pos.y);
+	}
 }
 
 void dae::SpriteAnimatorComp::SetDirection(const Direction direction)
@@ -54,4 +64,12 @@ void dae::SpriteAnimatorComp::SetDirectionalSprites(Direction direction, const s
 	}
 
 	m_Sprites[direction] = textureVec;
+}
+
+void dae::SpriteAnimatorComp::PlayAnimation(const std::vector<std::string>& spriteFiles, bool KillAfterAnimation)
+{
+	SetDirectionalSprites(Direction::Up, spriteFiles);
+	m_KillAfterAnimation = KillAfterAnimation;
+
+	GetGameObject().lock()->RemoveComponent(GetGameObject().lock()->GetComponent<TextureComp>());
 }

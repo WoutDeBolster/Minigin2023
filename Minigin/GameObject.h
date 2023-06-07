@@ -27,6 +27,9 @@ namespace dae
 
 		void SetLocalPosition(float x, float y);
 
+		void DestryoyGameObject();
+		bool GetDestroyGameobject();
+
 		// components
 		void AddComponent(std::shared_ptr<BaseComponent> myComponent);
 		template <typename T>
@@ -62,5 +65,7 @@ namespace dae
 		std::shared_ptr<TransformComp> m_pTransfrom;
 		std::weak_ptr<GameObject> m_Parent;
 		std::vector<std::shared_ptr<GameObject>> m_Childeren;
+
+		bool m_DestroyGameObject{ false };
 	};
 }

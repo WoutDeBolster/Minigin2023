@@ -17,7 +17,7 @@ void Scene::Add(std::shared_ptr<GameObject> object)
 
 void Scene::Remove(std::shared_ptr<GameObject> object)
 {
-	m_objects.erase(std::remove(m_objects.begin(), m_objects.end(), object), m_objects.end());
+	m_objects.erase(std::remove(m_objects.begin(), m_objects.end(), object));
 }
 
 void Scene::RemoveAll()
@@ -27,9 +27,19 @@ void Scene::RemoveAll()
 
 void Scene::Update(float deltaTime)
 {
+	std::shared_ptr<GameObject> removeObj = nullptr;
 	for (auto& object : m_objects)
 	{
 		object->Update(deltaTime);
+		if (object->GetDestroyGameobject())
+		{
+			removeObj = object;
+		}
+	}
+
+	if (removeObj != nullptr)
+	{
+		Remove(removeObj);
 	}
 }
 

@@ -3,10 +3,11 @@
 #include <string>
 #include "GameObject.h"
 
+
 class Block
 {
 public:
-	Block();
+	Block(glm::vec2 pos, std::string fileName, bool Pushable);
 	~Block() = default;
 
 	Block(const Block&) = delete;
@@ -14,12 +15,11 @@ public:
 	Block& operator= (const Block&) = delete;
 	Block& operator= (const Block&&) = delete;
 
-	std::shared_ptr<dae::GameObject> MakeBlock(glm::vec2 pos, std::string fileName);
-
+	std::shared_ptr<dae::GameObject> GetBlockObj();
+	//void  (float elapsed);
 
 private:
-
-
-	std::vector<std::shared_ptr<dae::GameObject>> m_Blocks;
+	bool m_IsPushible;
+	std::shared_ptr<dae::GameObject> m_BlockObj;
 };
 

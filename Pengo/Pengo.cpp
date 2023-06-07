@@ -28,6 +28,7 @@
 #include "Font.h"
 #include "Achievements.h"
 #include "Observer.h"
+#include "Block.h"
 
 dae::Minigin g_engine("../Data/");
 
@@ -132,21 +133,11 @@ void StandertBackground(dae::Scene& scene)
 	scene.Add(FPSCompCounter);
 }
 
-std::shared_ptr<GameObject> Block(glm::vec2 pos)
-{
-	auto block = std::make_shared<GameObject>();
-	block.get()->Initialize();
-	auto texBlock = std::make_shared<TextureComp>(block, "Blocks/Block_01.png");
 
-	block->AddComponent(texBlock);
-	block->SetLocalPosition(pos.x, pos.y);
-
-	return block;
-}
 
 void BuildLevel(Scene& scene)
 {
-	std::vector<glm::vec2> pPosBlocks;
+	std::vector<std::shared_ptr<GameObject>> pBlocks;
 	glm::ivec2 blockSize{ 32, 32 };
 	float borderSize{ 16.f };
 	glm::vec2 LevelOffset{ 26.f, 60.f };
@@ -160,9 +151,13 @@ void BuildLevel(Scene& scene)
 		{
 			if (x % 2 == 0 && y % 2 == 0 && x % 3 == 0 && y % 3 == 0)
 			{
-				auto block = Block({ (x * blockSize.x) + LevelOffset.x + borderSize , (y * blockSize.y) + LevelOffset.y + borderSize });
-				pPosBlocks.push_back(block->GetWorldPosition());
-				scene.Add(block);
+				glm::vec2 pos{ (x * blockSize.x) + LevelOffset.x + borderSize , (y * blockSize.y) + LevelOffset.y + borderSize };
+				auto block = std::make_shared<Block>(pos, "Blocks/Block_01.png", true);
+				auto blockObj = block->GetBlockObj();
+				blockObj->AddComponent(std::make_shared<SpriteAnimatorComp>(blockObj));
+
+				pBlocks.push_back(blockObj);
+				scene.Add(block->GetBlockObj());
 			}
 		}
 	}
@@ -179,7 +174,11 @@ void BuildLevel(Scene& scene)
 
 	// player and collision
 	auto player1 = MakePlayer(0, { 0, 250 }, scene);
-	auto colComp = std::make_shared<CollisionComp>(player1, blockSize, pPosBlocks);
+	auto colComp = std::make_shared<CollisionComp>(player1, blockSize);
+	for (size_t i = 0; i < pBlocks.size(); i++)
+	{
+		colComp->AddObject(pBlocks[i]);
+	}
 
 	// sprites
 	auto spriteComp = std::make_shared<SpriteAnimatorComp>(player1);

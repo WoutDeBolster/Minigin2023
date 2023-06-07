@@ -43,6 +43,16 @@ void dae::GameObject::SetLocalPosition(float x, float y)
 	m_pTransfrom->SetLocalPosition(x, y, 0.f);
 }
 
+void dae::GameObject::DestryoyGameObject()
+{
+	m_DestroyGameObject = true;
+}
+
+bool dae::GameObject::GetDestroyGameobject()
+{
+	return m_DestroyGameObject;
+}
+
 const glm::vec3& dae::GameObject::GetWorldPosition() const
 {
 	return m_pTransfrom->GetWorldPosition();
@@ -60,7 +70,10 @@ void dae::GameObject::AddComponent(std::shared_ptr<BaseComponent> myComponent)
 
 void dae::GameObject::RemoveComponent(std::shared_ptr<BaseComponent> myComponent)
 {
-	m_Components.erase(std::find(m_Components.begin(), m_Components.end(), myComponent));
+	if (myComponent != nullptr)
+	{
+		m_Components.erase(std::find(m_Components.begin(), m_Components.end(), myComponent));
+	}
 }
 
 void dae::GameObject::SetParent(std::shared_ptr<GameObject> parent, bool keepWorldPos)
