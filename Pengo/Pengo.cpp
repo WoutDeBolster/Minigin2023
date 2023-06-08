@@ -29,6 +29,7 @@
 #include "Achievements.h"
 #include "Observer.h"
 #include "Block.h"
+#include "JSonReader.h"
 
 dae::Minigin g_engine("../Data/");
 
@@ -137,30 +138,31 @@ void StandertBackground(dae::Scene& scene)
 
 void BuildLevel(Scene& scene)
 {
-	std::vector<std::shared_ptr<GameObject>> pBlocks;
+	auto reader = std::make_shared<JSonReader>("Level.json");
+	reader->MakeLevel();
+	auto pBlocks = reader->GetBlocks();
 	glm::ivec2 blockSize{ 32, 32 };
-	float borderSize{ 16.f };
 	glm::vec2 LevelOffset{ 26.f, 60.f };
 
-	float gridBlockWidth{ 13.f };
-	float gridBlockHeight{ 15.f };
+	//float gridBlockWidth{ 13.f };
+	//float gridBlockHeight{ 15.f };
 
-	for (int y = 0; y < gridBlockHeight; y++)
-	{
-		for (int x = 0; x < gridBlockWidth; x++)
-		{
-			if (x % 2 == 0 && y % 2 == 0 && x % 3 == 0 && y % 3 == 0)
-			{
-				glm::vec2 pos{ (x * blockSize.x) + LevelOffset.x + borderSize , (y * blockSize.y) + LevelOffset.y + borderSize };
-				auto block = std::make_shared<Block>(pos, "Blocks/Block_01.png", true);
-				auto blockObj = block->GetBlockObj();
-				blockObj->AddComponent(std::make_shared<SpriteAnimatorComp>(blockObj));
+	//for (int y = 0; y < gridBlockHeight; y++)
+	//{
+	//	for (int x = 0; x < gridBlockWidth; x++)
+	//	{
+	//		if (x % 2 == 0 && y % 2 == 0 && x % 3 == 0 && y % 3 == 0)
+	//		{
+	//			glm::vec2 pos{ (x * blockSize.x) + LevelOffset.x + borderSize , (y * blockSize.y) + LevelOffset.y + borderSize };
+	//			auto block = std::make_shared<dae::Block>(pos, "Blocks/Block_01.png", true);
+	//			auto blockObj = block->GetBlockObj();
+	//			blockObj->AddComponent(std::make_shared<SpriteAnimatorComp>(blockObj));
 
-				pBlocks.push_back(blockObj);
-				scene.Add(block->GetBlockObj());
-			}
-		}
-	}
+	//			pBlocks.push_back(block);
+	//			scene.Add(block->GetBlockObj());
+	//		}
+	//	}
+	//}
 
 	// border
 	auto border = std::make_shared<GameObject>();
@@ -177,7 +179,7 @@ void BuildLevel(Scene& scene)
 	auto colComp = std::make_shared<CollisionComp>(player1, blockSize);
 	for (size_t i = 0; i < pBlocks.size(); i++)
 	{
-		colComp->AddObject(pBlocks[i]);
+		colComp->AddObject(pBlocks[i]->GetBlockObj());
 	}
 
 	// sprites
@@ -193,10 +195,62 @@ void BuildLevel(Scene& scene)
 
 void load()
 {
-	auto& scene = dae::SceneManager::GetInstance().CreateScene("Demo");
+	///StandertBackground(scene);
+	//BuildLevel(scene);
 
-	StandertBackground(scene);
-	BuildLevel(scene);
+	auto reader = std::make_shared<JSonReader>("../Data/Level.json");
+	auto& scene = reader->MakeLevel();
+	auto pBlocks = reader->GetBlocks();
+	glm::ivec2 blockSize{ 32, 32 };
+	glm::vec2 LevelOffset{ 26.f, 60.f };
+
+	//float gridBlockWidth{ 13.f };
+	//float gridBlockHeight{ 15.f };
+
+	//for (int y = 0; y < gridBlockHeight; y++)
+	//{
+	//	for (int x = 0; x < gridBlockWidth; x++)
+	//	{
+	//		if (x % 2 == 0 && y % 2 == 0 && x % 3 == 0 && y % 3 == 0)
+	//		{
+	//			glm::vec2 pos{ (x * blockSize.x) + LevelOffset.x + borderSize , (y * blockSize.y) + LevelOffset.y + borderSize };
+	//			auto block = std::make_shared<dae::Block>(pos, "Blocks/Block_01.png", true);
+	//			auto blockObj = block->GetBlockObj();
+	//			blockObj->AddComponent(std::make_shared<SpriteAnimatorComp>(blockObj));
+
+	//			pBlocks.push_back(block);
+	//			scene.Add(block->GetBlockObj());
+	//		}
+	//	}
+	//}
+
+	// border
+	auto border = std::make_shared<GameObject>();
+	border.get()->Initialize();
+	auto texBorder = std::make_shared<TextureComp>(border, "GameBorder.png");
+
+	border->AddComponent(texBorder);
+	border->SetLocalPosition(LevelOffset.x, LevelOffset.y);
+
+	scene.Add(border);
+
+	// player and collision
+	auto player1 = MakePlayer(0, { 0, 250 }, scene);
+	auto colComp = std::make_shared<CollisionComp>(player1, blockSize);
+	for (size_t i = 0; i < pBlocks.size(); i++)
+	{
+		colComp->AddObject(pBlocks[i]->GetBlockObj());
+	}
+
+	// sprites
+	auto spriteComp = std::make_shared<SpriteAnimatorComp>(player1);
+	spriteComp->SetDirectionalSprites(Direction::Down, { "Pengo/Pengo_01.png", "Pengo/Pengo_02.png" });
+	spriteComp->SetDirectionalSprites(Direction::Left, { "Pengo/Pengo_03.png", "Pengo/Pengo_04.png" });
+	spriteComp->SetDirectionalSprites(Direction::Up, { "Pengo/Pengo_05.png", "Pengo/Pengo_06.png" });
+	spriteComp->SetDirectionalSprites(Direction::Right, { "Pengo/Pengo_07.png", "Pengo/Pengo_08.png" });
+
+	player1->AddComponent(colComp);
+	player1->AddComponent(spriteComp);
 }
 
 int main(int, char* []) {

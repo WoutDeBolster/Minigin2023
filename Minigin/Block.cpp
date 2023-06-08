@@ -1,9 +1,8 @@
 #include "Block.h"
 #include "TextureComp.h"
 
-using namespace dae;
 
-Block::Block(glm::vec2 pos, std::string fileName, bool Pushable)
+dae::Block::Block(glm::vec2 pos, std::string fileName, bool Pushable)
 	: m_IsPushible{ Pushable }
 {
 	auto block = std::make_shared<GameObject>();
@@ -16,7 +15,7 @@ Block::Block(glm::vec2 pos, std::string fileName, bool Pushable)
 	m_BlockObj = block;
 }
 
-std::shared_ptr<dae::GameObject> Block::GetBlockObj()
+std::shared_ptr<dae::GameObject> dae::Block::GetBlockObj()
 {
 	return m_BlockObj;
 }

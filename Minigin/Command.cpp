@@ -42,7 +42,7 @@ void dae::MoveCommand::Execute(float deltaTime)
 			m_pObj.lock()->GetComponent<SpriteAnimatorComp>()->SetDirection(Direction::Left);
 		}
 
-		std::cout << m_pObj.lock()->GetComponent<CollisionComp>()->GetHitDir().x << ", " << m_pObj.lock()->GetComponent<CollisionComp>()->GetHitDir().y << std::endl;
+		//std::cout << m_pObj.lock()->GetComponent<CollisionComp>()->GetHitDir().x << ", " << m_pObj.lock()->GetComponent<CollisionComp>()->GetHitDir().y << std::endl;
 	}
 }
 
