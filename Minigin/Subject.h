@@ -18,7 +18,7 @@ namespace dae
 
 		void AddObserver(std::shared_ptr<Observer> observer);
 		void RemoveObserver(std::shared_ptr<Observer> observer);
-		void Notify(const GameObject& actor, Event events);
+		void Notify(GameObject& actor, Event events);
 
 	private:
 		std::vector<std::shared_ptr<Observer>> m_pObservers;

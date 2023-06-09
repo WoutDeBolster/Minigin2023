@@ -1,6 +1,6 @@
 #include "HealthComp.h"
 
-dae::HealthComp::HealthComp(std::shared_ptr<GameObject> pOwner, unsigned int health)
+dae::HealthComp::HealthComp(std::shared_ptr<GameObject> pOwner, int health)
 	: BaseComponent(pOwner)
 	, m_Health{ health }
 {
@@ -14,13 +14,13 @@ void dae::HealthComp::Update(float)
 
 void dae::HealthComp::DistractHealth(int amount)
 {
-	if (m_Health > 0)
+	if (m_Health >= 0)
 	{
 		m_Health -= amount;
 		// notify scoreComp
 		m_pHealthChanged.get()->Notify(*GetGameObject().lock().get(), Event::HealthChanged);
 	}
-	else if (m_Health == 0)
+	else
 	{
 		// notify AchievementComp
 		m_pHealthChanged.get()->Notify(*GetGameObject().lock().get(), Event::ActorDie);

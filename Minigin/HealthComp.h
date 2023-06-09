@@ -7,7 +7,7 @@ namespace dae
 	class HealthComp final : public BaseComponent
 	{
 	public:
-		HealthComp(std::shared_ptr<GameObject> pOwner, unsigned int health = 3);
+		HealthComp(std::shared_ptr<GameObject> pOwner, int health = 3);
 		~HealthComp() = default;
 
 		HealthComp(const HealthComp&) = delete;
@@ -24,6 +24,6 @@ namespace dae
 	private:
 		std::unique_ptr<Subject> m_pHealthChanged;
 
-		unsigned int m_Health;
+		int m_Health;
 	};
 }

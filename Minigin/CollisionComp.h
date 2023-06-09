@@ -28,6 +28,7 @@ namespace dae
 	private:
 		void PushBlock(float deltaTime);
 		void CheckCollsionWithBlocks(float deltaTime);
+		void CheckCollisionWithEnemys();
 		void CheckCollsionPushedObj(std::weak_ptr<Block> block, float deltaTime);
 		void BreakBlock(std::weak_ptr<Block> block);
 		glm::f32vec2 GetDirection(glm::f32vec2 objPos1, glm::f32vec2 objSize1, glm::f32vec2 objPos2, glm::f32vec2 objSize2) const;
@@ -52,6 +53,9 @@ namespace dae
 		bool m_BlockClose{ false };
 		bool m_BlockNextToBlock{ false };
 		float m_SpriteTimer{ 0.f };
+
+		// enemy
+
 	};
 }
 

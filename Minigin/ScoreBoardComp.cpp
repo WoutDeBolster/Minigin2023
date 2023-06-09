@@ -13,7 +13,7 @@ void dae::ScoreBoardComp::Update(float)
 {
 }
 
-void dae::ScoreBoardComp::Notify(const GameObject& actor, Event events)
+void dae::ScoreBoardComp::Notify(GameObject& actor, Event events)
 {
 	switch (events)
 	{

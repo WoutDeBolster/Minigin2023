@@ -3,7 +3,7 @@
 #include "PointsComp.h"
 #include <iostream>
 
-void dae::Achievements::Notify(const GameObject& actor, Event events)
+void dae::Achievements::Notify(GameObject& actor, Event events)
 {
 	switch (events)
 	{

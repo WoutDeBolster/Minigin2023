@@ -18,7 +18,7 @@ namespace dae
 
 		void Update(float deltaTime) override;
 
-		void Notify(const GameObject& actor, Event events) override;
+		void Notify(GameObject& actor, Event events) override;
 	private:
 		std::shared_ptr<TextComp> m_pText;
 	};

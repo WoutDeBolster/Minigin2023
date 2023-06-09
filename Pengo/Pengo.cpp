@@ -144,6 +144,18 @@ void load()
 	glm::ivec2 blockSize{ 32, 32 };
 	std::vector<std::shared_ptr<GameObject>> pEnemys;
 
+	// fonts
+	std::shared_ptr<Font> font = ResourceManager::GetInstance().LoadFont("Lingua.otf", 36);
+	std::shared_ptr<Font> font2 = ResourceManager::GetInstance().LoadFont("Lingua.otf", 18);
+
+	// health board
+	auto health = MakeTextObj({ 34.f, 50.f }, "Lives: 3", font2, SDL_Color{ 1, 1, 1, 1 }, scene);
+	auto healthBoard = std::make_shared<HealthBoardComp>(health);
+
+	// score board
+	auto score = MakeTextObj({ 420.f, 50.f }, "Score: 0", font2, SDL_Color{ 1, 1, 1, 1 }, scene);
+	auto scoreBoard = std::make_shared<ScoreBoardComp>(score);
+
 	// enemys
 	auto enemy = std::make_shared<GameObject>();
 	enemy.get()->Initialize();
@@ -161,6 +173,8 @@ void load()
 	spriteCompEnemy->SetDirectionalSprites(Direction::Left, { "Enemys/Enemy_11.png", "Enemys/Enemy_12.png" });
 	spriteCompEnemy->SetDirectionalSprites(Direction::Up, { "Enemys/Enemy_13.png", "Enemys/Enemy_14.png" });
 	spriteCompEnemy->SetDirectionalSprites(Direction::Right, { "Enemys/Enemy_15.png", "Enemys/Enemy_16.png" });
+
+	actorEnemy->GetEnemySubject()->AddObserver(healthBoard);
 
 	enemy->AddComponent(actorEnemy);
 	enemy->AddComponent(spriteCompEnemy);
@@ -189,8 +203,17 @@ void load()
 	spriteComp->SetDirectionalSprites(Direction::Up, { "Pengo/Pengo_05.png", "Pengo/Pengo_06.png" });
 	spriteComp->SetDirectionalSprites(Direction::Right, { "Pengo/Pengo_07.png", "Pengo/Pengo_08.png" });
 
+	// points and health
+	auto pointsComp = std::make_shared<PointsComp>(player1);
+	auto healthComp = std::make_shared<HealthComp>(player1);
+
+	pointsComp->GetPointSubject()->AddObserver(scoreBoard);
+	healthComp->GetHeatlthSubject()->AddObserver(healthBoard);
+
 	player1->AddComponent(colComp);
 	player1->AddComponent(spriteComp);
+	player1->AddComponent(pointsComp);
+	player1->AddComponent(healthComp);
 }
 
 int main(int, char* []) {

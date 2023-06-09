@@ -20,7 +20,7 @@ namespace dae
 		Achievements& operator= (const Achievements&) = delete;
 		Achievements& operator= (const Achievements&&) = delete;
 
-		void Notify(const GameObject& actor, Event events) override;
+		void Notify(GameObject& actor, Event events) override;
 
 	private:
 		void Unlock(Achievement achievement);

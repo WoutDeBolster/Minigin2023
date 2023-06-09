@@ -2,6 +2,8 @@
 #include "SpriteAnimatorComp.h"
 #include "ActorComp.h"
 #include "EnemyComp.h"
+#include "HealthComp.h"
+#include "PointsComp.h"
 #include <iostream>
 
 dae::CollisionComp::CollisionComp(std::weak_ptr<GameObject> pOwner, glm::ivec2 textureSize)
@@ -32,7 +34,10 @@ void dae::CollisionComp::Update(float deltaTime)
 		}
 	}
 
-
+	if (m_pEnemyObjs.size() > 0)
+	{
+		CheckCollisionWithEnemys();
+	}
 }
 
 bool dae::CollisionComp::IsOverlapping() const
@@ -151,6 +156,27 @@ void dae::CollisionComp::CheckCollsionWithBlocks(float deltaTime)
 	}
 }
 
+void dae::CollisionComp::CheckCollisionWithEnemys()
+{
+	auto ownerObj = GetGameObject().lock();
+	auto ownerPos = ownerObj->GetWorldPosition();
+	auto ownerSize = glm::ivec2{ 24, 24 };
+
+	for (size_t i = 0; i < m_pEnemyObjs.size(); i++)
+	{
+		auto objPos = m_pEnemyObjs[i]->GetWorldPosition();
+
+		if (ownerPos.x <= objPos.x + ownerSize.x &&
+			ownerPos.x + ownerSize.x >= objPos.x &&
+			ownerPos.y <= objPos.y + ownerSize.y &&
+			ownerPos.y + ownerSize.y >= objPos.y)
+		{
+			ownerObj->GetComponent<HealthComp>()->DistractHealth(1);
+			ownerObj->SetLocalPosition(264.f, 300.f);
+		}
+	}
+}
+
 void dae::CollisionComp::CheckCollsionPushedObj(std::weak_ptr<Block> block, float deltaTime)
 {
 	auto ownerPos = block.lock()->GetBlockObj()->GetWorldPosition();
@@ -198,6 +224,7 @@ void dae::CollisionComp::CheckCollsionPushedObj(std::weak_ptr<Block> block, floa
 			std::cout << "Hit Enemy" << std::endl;
 
 			m_pEnemyObjs[i]->GetComponent<EnemyComp>()->Die();
+			GetGameObject().lock()->GetComponent<PointsComp>()->AddPoints(100);
 			m_pEnemyObjs.erase(std::remove(m_pEnemyObjs.begin(), m_pEnemyObjs.end(), m_pEnemyObjs[i]));
 		}
 	}
