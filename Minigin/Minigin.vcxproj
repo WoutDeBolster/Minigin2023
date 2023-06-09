@@ -216,7 +216,7 @@
     <ClInclude Include="InputManager.h" />
     <ClInclude Include="KeyBoard.h" />
     <ClInclude Include="Minigin.h" />
-    <ClInclude Include="ObjReader.h" />
+    <ClInclude Include="JSonReader.h" />
     <ClInclude Include="Observer.h" />
     <ClInclude Include="PlayerState.h" />
     <ClInclude Include="PointsComp.h" />
@@ -311,7 +311,7 @@
     <ClCompile Include="InputManager.cpp" />
     <ClCompile Include="KeyBoard.cpp" />
     <ClCompile Include="Minigin.cpp" />
-    <ClCompile Include="ObjReader.cpp" />
+    <ClCompile Include="JSonReader.cpp" />
     <ClCompile Include="Observer.cpp" />
     <ClCompile Include="PlayerState.cpp" />
     <ClCompile Include="PointsComp.cpp" />

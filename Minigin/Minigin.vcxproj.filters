@@ -240,7 +240,7 @@
     <ClInclude Include="rapidjson\schema.h">
       <Filter>Header Files\rapidjson</Filter>
     </ClInclude>
-    <ClInclude Include="ObjReader.h">
+    <ClInclude Include="JSonReader.h">
       <Filter>Header Files\Level</Filter>
     </ClInclude>
     <ClInclude Include="Block.h">
@@ -365,7 +365,7 @@
     <ClCompile Include="PlayerState.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ObjReader.cpp">
+    <ClCompile Include="JSonReader.cpp">
       <Filter>Source Files\Level</Filter>
     </ClCompile>
     <ClCompile Include="Block.cpp">

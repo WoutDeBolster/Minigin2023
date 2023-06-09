@@ -1,5 +1,6 @@
 #include "CollisionComp.h"
 #include "SpriteAnimatorComp.h"
+#include "ActorComp.h"
 #include <iostream>
 
 dae::CollisionComp::CollisionComp(std::weak_ptr<GameObject> pOwner, glm::ivec2 textureSize)
@@ -36,7 +37,6 @@ void dae::CollisionComp::PushBlock(float deltaTime)
 {
 	if (m_BlockPushed)
 	{
-
 		CheckCollsionPushedObj(m_pPuchedObject, deltaTime);
 
 		glm::vec3 currentPos{ m_pPuchedObject->GetWorldPosition() };
@@ -50,7 +50,8 @@ void dae::CollisionComp::PushBlock(float deltaTime)
 
 void dae::CollisionComp::CheckCollsionWithBlocks()
 {
-	auto ownerPos = GetGameObject().lock()->GetWorldPosition();
+	auto ownerObj = GetGameObject().lock();
+	auto ownerPos = ownerObj->GetWorldPosition();
 	auto ownerSize = glm::ivec2{ 24, 24 };
 
 	for (size_t i = 0; i < m_pObjs.size(); i++)
@@ -64,48 +65,52 @@ void dae::CollisionComp::CheckCollsionWithBlocks()
 		{
 			m_IsOverlapping = true;
 
-			// setting up glidding
-			m_pPuchedObject = std::move(m_pObjs[i]);
-			m_pObjs.erase(std::remove(m_pObjs.begin(), m_pObjs.end(), m_pObjs[i]));
-
 			// getting direction between player and block
 			m_HitDirection = GetDirection(objPos, m_ObjTexSize, ownerPos, ownerSize);
 			m_LatestHitDirection = m_HitDirection;
 
-			// first see if there is a block in the direction of pushing
-			m_PuchedObjectOriginalPos = objPos;
-
-			for (size_t q = 0; q < m_pObjs.size(); q++)
+			// if it is not a random actor
+			if (!ownerObj->GetComponent<ActorComp>()->IsMovingRandomly())
 			{
-				auto otherBlock = m_pObjs[q]->GetWorldPosition();
-				float smallOfset{ 1.f };
-				auto distanceBetweenOrinalPos = std::sqrt(std::pow((otherBlock.x - m_PuchedObjectOriginalPos.x), 2) + std::pow((otherBlock.y - m_PuchedObjectOriginalPos.y), 2));
+				// setting up glidding
+				m_pPuchedObject = std::move(m_pObjs[i]);
+				m_pObjs.erase(std::remove(m_pObjs.begin(), m_pObjs.end(), m_pObjs[i]));
 
-				if (distanceBetweenOrinalPos <= m_ObjTexSize.x + smallOfset || distanceBetweenOrinalPos <= m_ObjTexSize.y + smallOfset)
+				// first see if there is a block in the direction of pushing
+				m_PuchedObjectOriginalPos = objPos;
+
+				for (size_t q = 0; q < m_pObjs.size(); q++)
 				{
-					m_BlockClose = true;
-					// if the player is pushing towards the close block
-					auto DirectionCloseBlock = GetDirection(m_PuchedObjectOriginalPos, m_ObjTexSize, otherBlock, m_ObjTexSize);
-					if (DirectionCloseBlock == -m_HitDirection)
+					auto otherBlock = m_pObjs[q]->GetWorldPosition();
+					float smallOfset{ 1.f };
+					auto distanceBetweenOrinalPos = std::sqrt(std::pow((otherBlock.x - m_PuchedObjectOriginalPos.x), 2) + std::pow((otherBlock.y - m_PuchedObjectOriginalPos.y), 2));
+
+					if (distanceBetweenOrinalPos <= m_ObjTexSize.x + smallOfset || distanceBetweenOrinalPos <= m_ObjTexSize.y + smallOfset)
 					{
-						m_BlockNextToBlock = true;
-						break;
+						m_BlockClose = true;
+						// if the player is pushing towards the close block
+						auto DirectionCloseBlock = GetDirection(m_PuchedObjectOriginalPos, m_ObjTexSize, otherBlock, m_ObjTexSize);
+						if (DirectionCloseBlock == -m_HitDirection)
+						{
+							m_BlockNextToBlock = true;
+							break;
+						}
 					}
 				}
-			}
 
-			// slide object if there is no block net to it
-			if (!m_BlockNextToBlock)
-			{
-				m_SlideDir = m_HitDirection;
-				m_BlockPushed = true;
-			}
-			else
-			{
-				BreakBlock(m_pPuchedObject);
-				m_BlockPushed = false;
-				//m_pObjs.emplace_back(std::move(m_pPuchedObject));
-				m_BlockNextToBlock = false;
+				// slide object if there is no block net to it
+				if (!m_BlockNextToBlock)
+				{
+					m_SlideDir = m_HitDirection;
+					m_BlockPushed = true;
+				}
+				else
+				{
+					BreakBlock(m_pPuchedObject);
+					m_BlockPushed = false;
+					//m_pObjs.emplace_back(std::move(m_pPuchedObject));
+					m_BlockNextToBlock = false;
+				}
 			}
 
 			break;

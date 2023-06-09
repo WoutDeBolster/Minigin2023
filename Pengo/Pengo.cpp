@@ -52,18 +52,16 @@ std::shared_ptr<GameObject> MakeTextObj(glm::vec2 pos, const std::string& text,
 
 std::shared_ptr<GameObject> MakePlayer(unsigned int playerIdx, glm::vec2 pos, Scene& scene)
 {
-	// fonts
-	std::shared_ptr<Font> font = ResourceManager::GetInstance().LoadFont("Lingua.otf", 36);
-	std::shared_ptr<Font> font2 = ResourceManager::GetInstance().LoadFont("Lingua.otf", 18);
+	//// fonts
+	//std::shared_ptr<Font> font = ResourceManager::GetInstance().LoadFont("Lingua.otf", 36);
+	//std::shared_ptr<Font> font2 = ResourceManager::GetInstance().LoadFont("Lingua.otf", 18);
 
 	// player itself
 	auto player = std::make_shared<GameObject>();
 	player.get()->Initialize();
 	auto actorPlayer = std::make_shared<ActorComp>(player);
-	//auto terxturePlayer = std::make_shared<TextureComp>(player, "Pengo/Pengo_01.png");
 
 	player->AddComponent(actorPlayer);
-	//player->AddComponent(terxturePlayer);
 
 	player->SetLocalPosition(pos.x, pos.y);
 
@@ -134,8 +132,6 @@ void StandertBackground(dae::Scene& scene)
 	scene.Add(FPSCompCounter);
 }
 
-
-
 void BuildLevel(Scene& scene)
 {
 	auto reader = std::make_shared<JSonReader>("Level.json");
@@ -204,26 +200,6 @@ void load()
 	glm::ivec2 blockSize{ 32, 32 };
 	glm::vec2 LevelOffset{ 26.f, 60.f };
 
-	//float gridBlockWidth{ 13.f };
-	//float gridBlockHeight{ 15.f };
-
-	//for (int y = 0; y < gridBlockHeight; y++)
-	//{
-	//	for (int x = 0; x < gridBlockWidth; x++)
-	//	{
-	//		if (x % 2 == 0 && y % 2 == 0 && x % 3 == 0 && y % 3 == 0)
-	//		{
-	//			glm::vec2 pos{ (x * blockSize.x) + LevelOffset.x + borderSize , (y * blockSize.y) + LevelOffset.y + borderSize };
-	//			auto block = std::make_shared<dae::Block>(pos, "Blocks/Block_01.png", true);
-	//			auto blockObj = block->GetBlockObj();
-	//			blockObj->AddComponent(std::make_shared<SpriteAnimatorComp>(blockObj));
-
-	//			pBlocks.push_back(block);
-	//			scene.Add(block->GetBlockObj());
-	//		}
-	//	}
-	//}
-
 	// border
 	auto border = std::make_shared<GameObject>();
 	border.get()->Initialize();
@@ -243,14 +219,39 @@ void load()
 	}
 
 	// sprites
-	auto spriteComp = std::make_shared<SpriteAnimatorComp>(player1);
-	spriteComp->SetDirectionalSprites(Direction::Down, { "Pengo/Pengo_01.png", "Pengo/Pengo_02.png" });
-	spriteComp->SetDirectionalSprites(Direction::Left, { "Pengo/Pengo_03.png", "Pengo/Pengo_04.png" });
-	spriteComp->SetDirectionalSprites(Direction::Up, { "Pengo/Pengo_05.png", "Pengo/Pengo_06.png" });
-	spriteComp->SetDirectionalSprites(Direction::Right, { "Pengo/Pengo_07.png", "Pengo/Pengo_08.png" });
+	auto spriteCompPlayer = std::make_shared<SpriteAnimatorComp>(player1);
+	spriteCompPlayer->SetDirectionalSprites(Direction::Down, { "Pengo/Pengo_01.png", "Pengo/Pengo_02.png" });
+	spriteCompPlayer->SetDirectionalSprites(Direction::Left, { "Pengo/Pengo_03.png", "Pengo/Pengo_04.png" });
+	spriteCompPlayer->SetDirectionalSprites(Direction::Up, { "Pengo/Pengo_05.png", "Pengo/Pengo_06.png" });
+	spriteCompPlayer->SetDirectionalSprites(Direction::Right, { "Pengo/Pengo_07.png", "Pengo/Pengo_08.png" });
 
 	player1->AddComponent(colComp);
-	player1->AddComponent(spriteComp);
+	player1->AddComponent(spriteCompPlayer);
+
+	// enemys
+	auto enemy = std::make_shared<GameObject>();
+	enemy.get()->Initialize();
+	auto actorEnemy = std::make_shared<ActorComp>(enemy);
+	actorEnemy->SetRandomMovement(true);
+
+	auto colCompEnemy = std::make_shared<CollisionComp>(enemy, blockSize);
+	for (size_t i = 0; i < pBlocks.size(); i++)
+	{
+		colCompEnemy->AddObject(pBlocks[i]->GetBlockObj());
+	}
+
+	auto spriteCompEnemy = std::make_shared<SpriteAnimatorComp>(enemy);
+	spriteCompEnemy->SetDirectionalSprites(Direction::Down, { "Enemys/Enemy_09.png", "Enemys/Enemy_10.png" });
+	spriteCompEnemy->SetDirectionalSprites(Direction::Left, { "Enemys/Enemy_11.png", "Enemys/Enemy_12.png" });
+	spriteCompEnemy->SetDirectionalSprites(Direction::Up, { "Enemys/Enemy_13.png", "Enemys/Enemy_14.png" });
+	spriteCompEnemy->SetDirectionalSprites(Direction::Right, { "Enemys/Enemy_15.png", "Enemys/Enemy_16.png" });
+
+	enemy->AddComponent(actorEnemy);
+	enemy->AddComponent(spriteCompEnemy);
+	enemy->AddComponent(colCompEnemy);
+
+	enemy->SetLocalPosition(200.f, 0.f);
+	scene.Add(enemy);
 }
 
 int main(int, char* []) {
