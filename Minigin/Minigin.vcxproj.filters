@@ -246,6 +246,9 @@
     <ClInclude Include="Block.h">
       <Filter>Header Files\Level</Filter>
     </ClInclude>
+    <ClInclude Include="EnemyComp.h">
+      <Filter>Header Files\Components</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ResourceManager.cpp">
@@ -370,6 +373,9 @@
     </ClCompile>
     <ClCompile Include="Block.cpp">
       <Filter>Source Files\Level</Filter>
+    </ClCompile>
+    <ClCompile Include="EnemyComp.cpp">
+      <Filter>Source Files\Components</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

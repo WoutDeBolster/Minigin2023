@@ -6,6 +6,7 @@ namespace dae
 	enum class Event
 	{
 		ActorDie,
+		EnemyDie,
 		GainPoints,
 		HealthChanged,
 	};

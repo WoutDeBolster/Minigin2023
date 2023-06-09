@@ -7,7 +7,7 @@ dae::Block::Block(glm::vec2 pos, std::string fileName, bool Pushable)
 {
 	auto block = std::make_shared<GameObject>();
 	block.get()->Initialize();
-	auto texBlock = std::make_shared<TextureComp>(block, "Blocks/Block_01.png");
+	auto texBlock = std::make_shared<TextureComp>(block, fileName);
 
 	block->AddComponent(texBlock);
 	block->SetLocalPosition(pos.x, pos.y);

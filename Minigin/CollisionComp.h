@@ -17,11 +17,13 @@ namespace dae
 		CollisionComp& operator= (const CollisionComp&) = delete;
 		CollisionComp& operator= (const CollisionComp&&) = delete;
 
-		void AddObject(std::shared_ptr<Block> blockObj);
+		void AddObject(std::shared_ptr<Block> blockObjs);
+		void AddEnemys(std::shared_ptr<GameObject> EnemyObjs);
 		void Update(float deltaTime) override;
 
 		bool IsOverlapping();
 		glm::f32vec2 GetHitDir();
+
 	private:
 		void PushBlock(float deltaTime);
 		void CheckCollsionWithBlocks(float deltaTime);
@@ -31,7 +33,8 @@ namespace dae
 
 		// collision
 		glm::ivec2 m_ObjTexSize;
-		std::vector<std::shared_ptr<Block>> m_pObjs;
+		std::vector<std::shared_ptr<Block>> m_pBlockObjs;
+		std::vector<std::shared_ptr<GameObject>> m_pEnemyObjs;
 		bool m_IsOverlapping{};
 		glm::f32vec2 m_HitDirection{};
 		glm::f32vec2 m_LatestHitDirection{};

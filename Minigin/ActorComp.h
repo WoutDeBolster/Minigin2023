@@ -5,7 +5,7 @@
 
 namespace dae
 {
-	class ActorComp : public BaseComponent, public Subject
+	class ActorComp final : public BaseComponent, public Subject
 	{
 	public:
 		ActorComp(std::shared_ptr<GameObject> pOwner);
@@ -18,9 +18,6 @@ namespace dae
 
 		void Update(float deltaTime) override;
 		void Die();
-
-		void SetRandomMovement(bool randomMovementOn);
-		bool IsMovingRandomly() const;
 
 		Subject* GetActorSubject() const;
 

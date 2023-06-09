@@ -198,6 +198,7 @@
     <ClInclude Include="Block.h" />
     <ClInclude Include="CollisionComp.h" />
     <ClInclude Include="Command.h" />
+    <ClInclude Include="EnemyComp.h" />
     <ClInclude Include="Font.h" />
     <ClInclude Include="FPSComp.h" />
     <ClInclude Include="GameObject.h" />
@@ -264,6 +265,7 @@
     <ClCompile Include="Block.cpp" />
     <ClCompile Include="CollisionComp.cpp" />
     <ClCompile Include="Command.cpp" />
+    <ClCompile Include="EnemyComp.cpp" />
     <ClCompile Include="Font.cpp" />
     <ClCompile Include="FPSComp.cpp" />
     <ClCompile Include="GameObject.cpp" />

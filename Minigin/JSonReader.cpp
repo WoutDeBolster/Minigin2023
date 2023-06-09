@@ -31,21 +31,32 @@ dae::Scene& dae::JSonReader::MakeLevel()
 	// getting the values
 	// ******************
 	const rapidjson::Value& levelName = doc["LevelName"];
-	const rapidjson::Value& blockTexture = doc["TextureName"];
 	const rapidjson::Value& blockSizeWidth = doc["BlockWidth"];
 	const rapidjson::Value& blockSizeHeight = doc["BlockHeight"];
+
+	const rapidjson::Value& blockTexture = doc["BlockTexture"];
 	const rapidjson::Value& blockRowIDs = doc["BlockXIDs"];
 	const rapidjson::Value& blockColIDs = doc["BlockYIDs"];
+
+	const rapidjson::Value& diamondBlockTexture = doc["DiamondBlockTexture"];
+	const rapidjson::Value& diamondBlockRowIDs = doc["DiamondBlockXIDs"];
+	const rapidjson::Value& diamondBlockColIDs = doc["DiamondBlockYIDs"];
+
+	const rapidjson::Value& borderBlockTexture = doc["BorderBlockTexture"];
+	const rapidjson::Value& borderBlockRowIDs = doc["BorderBlockXIDs"];
+	const rapidjson::Value& borderBlockColIDs = doc["BorderBlockYIDs"];
 
 	// making level
 	auto& scene = SceneManager::GetInstance().CreateScene(levelName.GetString());
 
 	float borderSize{ 16.f };
-	glm::vec2 LevelOffset{ 26.f, 60.f };
+	glm::vec2 LevelOffset{ 51.f, 85.f };
 
 	//float gridBlockWidth{ 13.f };
 	//float gridBlockHeight{ 15.f };
-	for (size_t y = 0; y < blockColIDs.GetArray().Size(); y++)
+
+	// movable blocks
+	for (size_t y = 0; y < blockRowIDs.GetArray().Size(); y++)
 	{
 		glm::vec2 pos{ (blockRowIDs.GetArray()[y].GetInt() * blockSizeWidth.GetInt()) + LevelOffset.x + borderSize - blockSizeWidth.GetInt() ,
 						(blockColIDs.GetArray()[y].GetInt() * blockSizeHeight.GetInt()) + LevelOffset.y + borderSize - blockSizeHeight.GetInt() };
@@ -53,6 +64,34 @@ dae::Scene& dae::JSonReader::MakeLevel()
 		auto block = std::make_shared<Block>(pos, "Blocks/" + fileName, true);
 		auto blockObj = block->GetBlockObj();
 		blockObj->AddComponent(std::make_shared<SpriteAnimatorComp>(blockObj));
+
+		m_pBlocks.push_back(block);
+		scene.Add(blockObj);
+	}
+
+	// non movable blocks
+	for (size_t y = 0; y < diamondBlockRowIDs.GetArray().Size(); y++)
+	{
+		glm::vec2 pos{ (diamondBlockRowIDs.GetArray()[y].GetInt() * blockSizeWidth.GetInt()) + LevelOffset.x + borderSize - blockSizeWidth.GetInt() ,
+						(diamondBlockColIDs.GetArray()[y].GetInt() * blockSizeHeight.GetInt()) + LevelOffset.y + borderSize - blockSizeHeight.GetInt() };
+		std::string fileName{ diamondBlockTexture.GetString() };
+		auto block = std::make_shared<Block>(pos, "Blocks/" + fileName, false);
+		auto blockObj = block->GetBlockObj();
+		//blockObj->AddComponent(std::make_shared<SpriteAnimatorComp>(blockObj));
+
+		m_pBlocks.push_back(block);
+		scene.Add(blockObj);
+	}
+
+	// border blocks
+	for (size_t y = 0; y < borderBlockRowIDs.GetArray().Size(); y++)
+	{
+		glm::vec2 pos{ (borderBlockRowIDs.GetArray()[y].GetInt() * blockSizeWidth.GetInt()) + LevelOffset.x + borderSize - blockSizeWidth.GetInt() ,
+						(borderBlockColIDs.GetArray()[y].GetInt() * blockSizeHeight.GetInt()) + LevelOffset.y + borderSize - blockSizeHeight.GetInt() };
+		std::string fileName{ borderBlockTexture.GetString() };
+		auto block = std::make_shared<Block>(pos, "Blocks/" + fileName, false);
+		auto blockObj = block->GetBlockObj();
+		//blockObj->AddComponent(std::make_shared<SpriteAnimatorComp>(blockObj));
 
 		m_pBlocks.push_back(block);
 		scene.Add(blockObj);

@@ -21,6 +21,7 @@
 #include "ScoreBoardComp.h"
 #include "PointsComp.h"
 #include "ActorComp.h"
+#include "EnemyComp.h"
 #include "CollisionComp.h"
 #include "SpriteAnimatorComp.h"
 
@@ -105,17 +106,17 @@ void StandertBackground(dae::Scene& scene)
 	//go->SetLocalPosition(216, 180);
 	//scene.Add(go);
 
-	// top text
-	auto to = std::make_shared<dae::GameObject>();
-	to.get()->Initialize();
-	std::shared_ptr<dae::Font> font = dae::ResourceManager::GetInstance().LoadFont("Lingua.otf", 36);
-	std::shared_ptr<dae::TextComp> text = std::make_shared<dae::TextComp>(to, "Programming 4 Assignment"
-		, font, SDL_Color{ 255, 255, 255 });
+	//// top text
+	//auto to = std::make_shared<dae::GameObject>();
+	//to.get()->Initialize();
+	//std::shared_ptr<dae::Font> font = dae::ResourceManager::GetInstance().LoadFont("Lingua.otf", 36);
+	//std::shared_ptr<dae::TextComp> text = std::make_shared<dae::TextComp>(to, "Programming 4 Assignment"
+	//	, font, SDL_Color{ 255, 255, 255 });
 
-	to->AddComponent(text);
+	//to->AddComponent(text);
 
-	to->SetLocalPosition(80, 20);
-	scene.Add(to);
+	//to->SetLocalPosition(80, 20);
+	//scene.Add(to);
 
 	// FPS object
 	auto FPSCompCounter = std::make_shared<dae::GameObject>();
@@ -132,107 +133,21 @@ void StandertBackground(dae::Scene& scene)
 	scene.Add(FPSCompCounter);
 }
 
-void BuildLevel(Scene& scene)
-{
-	auto reader = std::make_shared<JSonReader>("Level.json");
-	reader->MakeLevel();
-	auto pBlocks = reader->GetBlocks();
-	glm::ivec2 blockSize{ 32, 32 };
-	glm::vec2 LevelOffset{ 26.f, 60.f };
-
-	//float gridBlockWidth{ 13.f };
-	//float gridBlockHeight{ 15.f };
-
-	//for (int y = 0; y < gridBlockHeight; y++)
-	//{
-	//	for (int x = 0; x < gridBlockWidth; x++)
-	//	{
-	//		if (x % 2 == 0 && y % 2 == 0 && x % 3 == 0 && y % 3 == 0)
-	//		{
-	//			glm::vec2 pos{ (x * blockSize.x) + LevelOffset.x + borderSize , (y * blockSize.y) + LevelOffset.y + borderSize };
-	//			auto block = std::make_shared<dae::Block>(pos, "Blocks/Block_01.png", true);
-	//			auto blockObj = block->GetBlockObj();
-	//			blockObj->AddComponent(std::make_shared<SpriteAnimatorComp>(blockObj));
-
-	//			pBlocks.push_back(block);
-	//			scene.Add(block->GetBlockObj());
-	//		}
-	//	}
-	//}
-
-	// border
-	auto border = std::make_shared<GameObject>();
-	border.get()->Initialize();
-	auto texBorder = std::make_shared<TextureComp>(border, "GameBorder.png");
-
-	border->AddComponent(texBorder);
-	border->SetLocalPosition(LevelOffset.x, LevelOffset.y);
-
-	scene.Add(border);
-
-	// player and collision
-	auto player1 = MakePlayer(0, { 0, 250 }, scene);
-	auto colComp = std::make_shared<CollisionComp>(player1, blockSize);
-	for (size_t i = 0; i < pBlocks.size(); i++)
-	{
-		colComp->AddObject(pBlocks[i]);
-	}
-
-	// sprites
-	auto spriteComp = std::make_shared<SpriteAnimatorComp>(player1);
-	spriteComp->SetDirectionalSprites(Direction::Down, { "Pengo/Pengo_01.png", "Pengo/Pengo_02.png" });
-	spriteComp->SetDirectionalSprites(Direction::Left, { "Pengo/Pengo_03.png", "Pengo/Pengo_04.png" });
-	spriteComp->SetDirectionalSprites(Direction::Up, { "Pengo/Pengo_05.png", "Pengo/Pengo_06.png" });
-	spriteComp->SetDirectionalSprites(Direction::Right, { "Pengo/Pengo_07.png", "Pengo/Pengo_08.png" });
-
-	player1->AddComponent(colComp);
-	player1->AddComponent(spriteComp);
-}
-
 void load()
 {
-	//StandertBackground(scene);
-	//BuildLevel(scene);
-
 	auto reader = std::make_shared<JSonReader>("../Data/Level.json");
 	auto& scene = reader->MakeLevel();
 	auto pBlocks = reader->GetBlocks();
+
+	StandertBackground(scene);
+
 	glm::ivec2 blockSize{ 32, 32 };
-	glm::vec2 LevelOffset{ 26.f, 60.f };
-
-	// border
-	auto border = std::make_shared<GameObject>();
-	border.get()->Initialize();
-	auto texBorder = std::make_shared<TextureComp>(border, "GameBorder.png");
-
-	border->AddComponent(texBorder);
-	border->SetLocalPosition(LevelOffset.x, LevelOffset.y);
-
-	scene.Add(border);
-
-	// player and collision
-		// player and collision
-	auto player1 = MakePlayer(0, { 0, 250 }, scene);
-	auto colComp = std::make_shared<CollisionComp>(player1, blockSize);
-	for (size_t i = 0; i < pBlocks.size(); i++)
-	{
-		colComp->AddObject(pBlocks[i]);
-	}
-
-	// sprites
-	auto spriteComp = std::make_shared<SpriteAnimatorComp>(player1);
-	spriteComp->SetDirectionalSprites(Direction::Down, { "Pengo/Pengo_01.png", "Pengo/Pengo_02.png" });
-	spriteComp->SetDirectionalSprites(Direction::Left, { "Pengo/Pengo_03.png", "Pengo/Pengo_04.png" });
-	spriteComp->SetDirectionalSprites(Direction::Up, { "Pengo/Pengo_05.png", "Pengo/Pengo_06.png" });
-	spriteComp->SetDirectionalSprites(Direction::Right, { "Pengo/Pengo_07.png", "Pengo/Pengo_08.png" });
-
-	player1->AddComponent(colComp);
-	player1->AddComponent(spriteComp);
+	std::vector<std::shared_ptr<GameObject>> pEnemys;
 
 	// enemys
 	auto enemy = std::make_shared<GameObject>();
 	enemy.get()->Initialize();
-	auto actorEnemy = std::make_shared<ActorComp>(enemy);
+	auto actorEnemy = std::make_shared<EnemyComp>(enemy);
 	actorEnemy->SetRandomMovement(true);
 
 	auto colCompEnemy = std::make_shared<CollisionComp>(enemy, blockSize);
@@ -253,6 +168,29 @@ void load()
 
 	enemy->SetLocalPosition(236.f, 336.f);
 	scene.Add(enemy);
+	pEnemys.push_back(enemy);
+
+	// player and collision
+	auto player1 = MakePlayer(0, { 264.f, 300.f }, scene);
+	auto colComp = std::make_shared<CollisionComp>(player1, blockSize);
+	for (size_t i = 0; i < pBlocks.size(); i++)
+	{
+		colComp->AddObject(pBlocks[i]);
+	}
+	for (size_t i = 0; i < pEnemys.size(); i++)
+	{
+		colComp->AddEnemys(pEnemys[i]);
+	}
+
+	// sprites
+	auto spriteComp = std::make_shared<SpriteAnimatorComp>(player1);
+	spriteComp->SetDirectionalSprites(Direction::Down, { "Pengo/Pengo_01.png", "Pengo/Pengo_02.png" });
+	spriteComp->SetDirectionalSprites(Direction::Left, { "Pengo/Pengo_03.png", "Pengo/Pengo_04.png" });
+	spriteComp->SetDirectionalSprites(Direction::Up, { "Pengo/Pengo_05.png", "Pengo/Pengo_06.png" });
+	spriteComp->SetDirectionalSprites(Direction::Right, { "Pengo/Pengo_07.png", "Pengo/Pengo_08.png" });
+
+	player1->AddComponent(colComp);
+	player1->AddComponent(spriteComp);
 }
 
 int main(int, char* []) {

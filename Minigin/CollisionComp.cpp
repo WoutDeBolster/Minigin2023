@@ -1,6 +1,7 @@
 #include "CollisionComp.h"
 #include "SpriteAnimatorComp.h"
 #include "ActorComp.h"
+#include "EnemyComp.h"
 #include <iostream>
 
 dae::CollisionComp::CollisionComp(std::weak_ptr<GameObject> pOwner, glm::ivec2 textureSize)
@@ -9,14 +10,19 @@ dae::CollisionComp::CollisionComp(std::weak_ptr<GameObject> pOwner, glm::ivec2 t
 {
 }
 
-void dae::CollisionComp::AddObject(std::shared_ptr<Block> blockObj)
+void dae::CollisionComp::AddObject(std::shared_ptr<Block> blockObjs)
 {
-	m_pObjs.emplace_back(std::move(blockObj));
+	m_pBlockObjs.emplace_back(std::move(blockObjs));
+}
+
+void dae::CollisionComp::AddEnemys(std::shared_ptr<GameObject> EnemyObjs)
+{
+	m_pEnemyObjs.emplace_back(std::move(EnemyObjs));
 }
 
 void dae::CollisionComp::Update(float deltaTime)
 {
-	if (m_pObjs.size() > 0)
+	if (m_pBlockObjs.size() > 0)
 	{
 		CheckCollsionWithBlocks(deltaTime);
 		PushBlock(deltaTime);
@@ -54,9 +60,9 @@ void dae::CollisionComp::CheckCollsionWithBlocks(float deltaTime)
 	auto ownerPos = ownerObj->GetWorldPosition();
 	auto ownerSize = glm::ivec2{ 24, 24 };
 
-	for (size_t i = 0; i < m_pObjs.size(); i++)
+	for (size_t i = 0; i < m_pBlockObjs.size(); i++)
 	{
-		auto objPos = m_pObjs[i]->GetBlockObj()->GetWorldPosition();
+		auto objPos = m_pBlockObjs[i]->GetBlockObj()->GetWorldPosition();
 
 		if (ownerPos.x <= objPos.x + m_ObjTexSize.x &&
 			ownerPos.x + ownerSize.x >= objPos.x &&
@@ -71,18 +77,18 @@ void dae::CollisionComp::CheckCollsionWithBlocks(float deltaTime)
 			m_LatestHitDirection = m_HitDirection;
 
 			// if it is not a random actor or if the block cant be pushed
-			if (!ownerObj->GetComponent<ActorComp>()->IsMovingRandomly() || !m_pObjs[i]->GetIsPushible())
+			if (ownerObj->GetComponent<ActorComp>() != nullptr && m_pBlockObjs[i]->GetIsPushible())
 			{
 				// setting up glidding
-				m_pPuchedObject = std::move(m_pObjs[i]);
-				m_pObjs.erase(std::remove(m_pObjs.begin(), m_pObjs.end(), m_pObjs[i]));
+				m_pPuchedObject = std::move(m_pBlockObjs[i]);
+				m_pBlockObjs.erase(std::remove(m_pBlockObjs.begin(), m_pBlockObjs.end(), m_pBlockObjs[i]));
 
 				// first see if there is a block in the direction of pushing
 				m_PuchedObjectOriginalPos = objPos;
 
-				for (size_t q = 0; q < m_pObjs.size(); q++)
+				for (size_t q = 0; q < m_pBlockObjs.size(); q++)
 				{
-					auto otherBlock = m_pObjs[q]->GetBlockObj()->GetWorldPosition();
+					auto otherBlock = m_pBlockObjs[q]->GetBlockObj()->GetWorldPosition();
 					float smallOfset{ 1.f };
 					auto distanceBetweenOrinalPos = std::sqrt(std::pow((otherBlock.x - m_PuchedObjectOriginalPos.x), 2) + std::pow((otherBlock.y - m_PuchedObjectOriginalPos.y), 2));
 
@@ -136,9 +142,10 @@ void dae::CollisionComp::CheckCollsionPushedObj(std::weak_ptr<Block> block, floa
 {
 	auto ownerPos = block.lock()->GetBlockObj()->GetWorldPosition();
 
-	for (size_t i = 0; i < m_pObjs.size(); i++)
+	// hitting blocks
+	for (size_t i = 0; i < m_pBlockObjs.size(); i++)
 	{
-		auto objPos = m_pObjs[i]->GetBlockObj()->GetWorldPosition();
+		auto objPos = m_pBlockObjs[i]->GetBlockObj()->GetWorldPosition();
 
 		if (ownerPos.x <= objPos.x + m_ObjTexSize.x &&
 			ownerPos.x + m_ObjTexSize.x >= objPos.x &&
@@ -150,7 +157,7 @@ void dae::CollisionComp::CheckCollsionPushedObj(std::weak_ptr<Block> block, floa
 			if (directionBetweenBlocks == -m_LatestHitDirection)
 			{
 				// stop gliding
-				m_pObjs.push_back(m_pPuchedObject);
+				m_pBlockObjs.push_back(m_pPuchedObject);
 				m_BlockPushed = false;
 
 				// move object a bit back
@@ -162,6 +169,23 @@ void dae::CollisionComp::CheckCollsionPushedObj(std::weak_ptr<Block> block, floa
 
 				break;
 			}
+		}
+	}
+
+	// hitting enemys
+	for (size_t i = 0; i < m_pEnemyObjs.size(); i++)
+	{
+		auto objPos = m_pEnemyObjs[i]->GetWorldPosition();
+
+		if (ownerPos.x <= objPos.x + m_ObjTexSize.x &&
+			ownerPos.x + m_ObjTexSize.x >= objPos.x &&
+			ownerPos.y <= objPos.y + m_ObjTexSize.y &&
+			ownerPos.y + m_ObjTexSize.y >= objPos.y)
+		{
+			std::cout << "Hit Enemy" << std::endl;
+
+			m_pEnemyObjs[i]->GetComponent<EnemyComp>()->Die();
+			m_pEnemyObjs.erase(std::remove(m_pEnemyObjs.begin(), m_pEnemyObjs.end(), m_pEnemyObjs[i]));
 		}
 	}
 }
