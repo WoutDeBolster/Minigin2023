@@ -17,7 +17,7 @@ namespace dae
 		Block& operator= (const Block&&) = delete;
 
 		std::shared_ptr<dae::GameObject> GetBlockObj();
-		//void  (float elapsed);
+		bool GetIsPushible() const;
 
 	private:
 		bool m_IsPushible;

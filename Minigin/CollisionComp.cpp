@@ -9,7 +9,7 @@ dae::CollisionComp::CollisionComp(std::weak_ptr<GameObject> pOwner, glm::ivec2 t
 {
 }
 
-void dae::CollisionComp::AddObject(std::shared_ptr<GameObject> blockObj)
+void dae::CollisionComp::AddObject(std::shared_ptr<Block> blockObj)
 {
 	m_pObjs.emplace_back(std::move(blockObj));
 }
@@ -18,7 +18,7 @@ void dae::CollisionComp::Update(float deltaTime)
 {
 	if (m_pObjs.size() > 0)
 	{
-		CheckCollsionWithBlocks();
+		CheckCollsionWithBlocks(deltaTime);
 		PushBlock(deltaTime);
 	}
 }
@@ -39,16 +39,16 @@ void dae::CollisionComp::PushBlock(float deltaTime)
 	{
 		CheckCollsionPushedObj(m_pPuchedObject, deltaTime);
 
-		glm::vec3 currentPos{ m_pPuchedObject->GetWorldPosition() };
+		glm::vec3 currentPos{ m_pPuchedObject->GetBlockObj()->GetWorldPosition() };
 
 		// move pos game obejct
 		currentPos.x += m_SlidingSpeed * m_SlideDir.x * deltaTime;
 		currentPos.y += m_SlidingSpeed * m_SlideDir.y * deltaTime;
-		m_pPuchedObject->SetLocalPosition(currentPos.x, currentPos.y);
+		m_pPuchedObject->GetBlockObj()->SetLocalPosition(currentPos.x, currentPos.y);
 	}
 }
 
-void dae::CollisionComp::CheckCollsionWithBlocks()
+void dae::CollisionComp::CheckCollsionWithBlocks(float deltaTime)
 {
 	auto ownerObj = GetGameObject().lock();
 	auto ownerPos = ownerObj->GetWorldPosition();
@@ -56,7 +56,7 @@ void dae::CollisionComp::CheckCollsionWithBlocks()
 
 	for (size_t i = 0; i < m_pObjs.size(); i++)
 	{
-		auto objPos = m_pObjs[i]->GetWorldPosition();
+		auto objPos = m_pObjs[i]->GetBlockObj()->GetWorldPosition();
 
 		if (ownerPos.x <= objPos.x + m_ObjTexSize.x &&
 			ownerPos.x + ownerSize.x >= objPos.x &&
@@ -64,13 +64,14 @@ void dae::CollisionComp::CheckCollsionWithBlocks()
 			ownerPos.y + ownerSize.y >= objPos.y)
 		{
 			m_IsOverlapping = true;
+			std::cout << "Hit" << std::endl;
 
 			// getting direction between player and block
 			m_HitDirection = GetDirection(objPos, m_ObjTexSize, ownerPos, ownerSize);
 			m_LatestHitDirection = m_HitDirection;
 
-			// if it is not a random actor
-			if (!ownerObj->GetComponent<ActorComp>()->IsMovingRandomly())
+			// if it is not a random actor or if the block cant be pushed
+			if (!ownerObj->GetComponent<ActorComp>()->IsMovingRandomly() || !m_pObjs[i]->GetIsPushible())
 			{
 				// setting up glidding
 				m_pPuchedObject = std::move(m_pObjs[i]);
@@ -81,7 +82,7 @@ void dae::CollisionComp::CheckCollsionWithBlocks()
 
 				for (size_t q = 0; q < m_pObjs.size(); q++)
 				{
-					auto otherBlock = m_pObjs[q]->GetWorldPosition();
+					auto otherBlock = m_pObjs[q]->GetBlockObj()->GetWorldPosition();
 					float smallOfset{ 1.f };
 					auto distanceBetweenOrinalPos = std::sqrt(std::pow((otherBlock.x - m_PuchedObjectOriginalPos.x), 2) + std::pow((otherBlock.y - m_PuchedObjectOriginalPos.y), 2));
 
@@ -112,6 +113,14 @@ void dae::CollisionComp::CheckCollsionWithBlocks()
 					m_BlockNextToBlock = false;
 				}
 			}
+			else
+			{
+				// move the random moving object back a bit
+				auto actorSpeed{ 50.f };
+				ownerPos.x -= actorSpeed * m_HitDirection.x * deltaTime * 1.5f;
+				ownerPos.y -= actorSpeed * m_HitDirection.y * deltaTime * 1.5f;
+				ownerObj->SetLocalPosition(ownerPos.x, ownerPos.y);
+			}
 
 			break;
 		}
@@ -123,13 +132,13 @@ void dae::CollisionComp::CheckCollsionWithBlocks()
 	}
 }
 
-void dae::CollisionComp::CheckCollsionPushedObj(std::weak_ptr<GameObject> block, float deltaTime)
+void dae::CollisionComp::CheckCollsionPushedObj(std::weak_ptr<Block> block, float deltaTime)
 {
-	auto ownerPos = block.lock()->GetWorldPosition();
+	auto ownerPos = block.lock()->GetBlockObj()->GetWorldPosition();
 
 	for (size_t i = 0; i < m_pObjs.size(); i++)
 	{
-		auto objPos = m_pObjs[i]->GetWorldPosition();
+		auto objPos = m_pObjs[i]->GetBlockObj()->GetWorldPosition();
 
 		if (ownerPos.x <= objPos.x + m_ObjTexSize.x &&
 			ownerPos.x + m_ObjTexSize.x >= objPos.x &&
@@ -145,11 +154,11 @@ void dae::CollisionComp::CheckCollsionPushedObj(std::weak_ptr<GameObject> block,
 				m_BlockPushed = false;
 
 				// move object a bit back
-				glm::vec3 currentPos{ m_pPuchedObject->GetWorldPosition() };
+				glm::vec3 currentPos{ m_pPuchedObject->GetBlockObj()->GetWorldPosition() };
 
 				currentPos.x -= m_SlidingSpeed * m_SlideDir.x * deltaTime * 1.5f;
 				currentPos.y -= m_SlidingSpeed * m_SlideDir.y * deltaTime * 1.5f;
-				m_pPuchedObject->SetLocalPosition(currentPos.x, currentPos.y);
+				m_pPuchedObject->GetBlockObj()->SetLocalPosition(currentPos.x, currentPos.y);
 
 				break;
 			}
@@ -157,7 +166,7 @@ void dae::CollisionComp::CheckCollsionPushedObj(std::weak_ptr<GameObject> block,
 	}
 }
 
-void dae::CollisionComp::BreakBlock(std::weak_ptr<GameObject> block)
+void dae::CollisionComp::BreakBlock(std::weak_ptr<Block> block)
 {
 	// TODO: this is so skuffed plz fix this
 	std::vector<std::string> BreakableObjFiles{ "Blocks/BreakingBlock_01.png", "Blocks/BreakingBlock_02.png",
@@ -165,9 +174,9 @@ void dae::CollisionComp::BreakBlock(std::weak_ptr<GameObject> block)
 												"Blocks/BreakingBlock_05.png", "Blocks/BreakingBlock_06.png",
 												"Blocks/BreakingBlock_07.png", "Blocks/BreakingBlock_08.png" };
 
-	if (block.lock()->GetComponent<SpriteAnimatorComp>() != nullptr)
+	if (block.lock()->GetBlockObj()->GetComponent<SpriteAnimatorComp>() != nullptr)
 	{
-		block.lock()->GetComponent<SpriteAnimatorComp>()->PlayAnimation(BreakableObjFiles, true);
+		block.lock()->GetBlockObj()->GetComponent<SpriteAnimatorComp>()->PlayAnimation(BreakableObjFiles, true);
 	}
 }
 

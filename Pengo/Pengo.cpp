@@ -175,7 +175,7 @@ void BuildLevel(Scene& scene)
 	auto colComp = std::make_shared<CollisionComp>(player1, blockSize);
 	for (size_t i = 0; i < pBlocks.size(); i++)
 	{
-		colComp->AddObject(pBlocks[i]->GetBlockObj());
+		colComp->AddObject(pBlocks[i]);
 	}
 
 	// sprites
@@ -191,7 +191,7 @@ void BuildLevel(Scene& scene)
 
 void load()
 {
-	///StandertBackground(scene);
+	//StandertBackground(scene);
 	//BuildLevel(scene);
 
 	auto reader = std::make_shared<JSonReader>("../Data/Level.json");
@@ -211,22 +211,23 @@ void load()
 	scene.Add(border);
 
 	// player and collision
+		// player and collision
 	auto player1 = MakePlayer(0, { 0, 250 }, scene);
 	auto colComp = std::make_shared<CollisionComp>(player1, blockSize);
 	for (size_t i = 0; i < pBlocks.size(); i++)
 	{
-		colComp->AddObject(pBlocks[i]->GetBlockObj());
+		colComp->AddObject(pBlocks[i]);
 	}
 
 	// sprites
-	auto spriteCompPlayer = std::make_shared<SpriteAnimatorComp>(player1);
-	spriteCompPlayer->SetDirectionalSprites(Direction::Down, { "Pengo/Pengo_01.png", "Pengo/Pengo_02.png" });
-	spriteCompPlayer->SetDirectionalSprites(Direction::Left, { "Pengo/Pengo_03.png", "Pengo/Pengo_04.png" });
-	spriteCompPlayer->SetDirectionalSprites(Direction::Up, { "Pengo/Pengo_05.png", "Pengo/Pengo_06.png" });
-	spriteCompPlayer->SetDirectionalSprites(Direction::Right, { "Pengo/Pengo_07.png", "Pengo/Pengo_08.png" });
+	auto spriteComp = std::make_shared<SpriteAnimatorComp>(player1);
+	spriteComp->SetDirectionalSprites(Direction::Down, { "Pengo/Pengo_01.png", "Pengo/Pengo_02.png" });
+	spriteComp->SetDirectionalSprites(Direction::Left, { "Pengo/Pengo_03.png", "Pengo/Pengo_04.png" });
+	spriteComp->SetDirectionalSprites(Direction::Up, { "Pengo/Pengo_05.png", "Pengo/Pengo_06.png" });
+	spriteComp->SetDirectionalSprites(Direction::Right, { "Pengo/Pengo_07.png", "Pengo/Pengo_08.png" });
 
 	player1->AddComponent(colComp);
-	player1->AddComponent(spriteCompPlayer);
+	player1->AddComponent(spriteComp);
 
 	// enemys
 	auto enemy = std::make_shared<GameObject>();
@@ -237,7 +238,7 @@ void load()
 	auto colCompEnemy = std::make_shared<CollisionComp>(enemy, blockSize);
 	for (size_t i = 0; i < pBlocks.size(); i++)
 	{
-		colCompEnemy->AddObject(pBlocks[i]->GetBlockObj());
+		colCompEnemy->AddObject(pBlocks[i]);
 	}
 
 	auto spriteCompEnemy = std::make_shared<SpriteAnimatorComp>(enemy);
@@ -250,7 +251,7 @@ void load()
 	enemy->AddComponent(spriteCompEnemy);
 	enemy->AddComponent(colCompEnemy);
 
-	enemy->SetLocalPosition(200.f, 0.f);
+	enemy->SetLocalPosition(236.f, 336.f);
 	scene.Add(enemy);
 }
 

@@ -19,3 +19,8 @@ std::shared_ptr<dae::GameObject> dae::Block::GetBlockObj()
 {
 	return m_BlockObj;
 }
+
+bool dae::Block::GetIsPushible() const
+{
+	return m_IsPushible;
+}
