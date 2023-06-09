@@ -19,9 +19,15 @@ void dae::MoveCommand::Execute(float deltaTime)
 		auto objTransform{ m_pObj.lock()->GetComponent<TransformComp>() };
 		glm::vec3 currentPos{ objTransform->GetWorldPosition() };
 
+		float speed = m_Speed;
+		if (objCollisionComp->GetSlowDownTimer() > 0)
+		{
+			speed = m_Speed / 5.f;
+		}
+
 		// move pos game obejct
-		currentPos.x += m_Speed * m_Dir.x * deltaTime;
-		currentPos.y += m_Speed * m_Dir.y * deltaTime;
+		currentPos.x += speed * m_Dir.x * deltaTime;
+		currentPos.y += speed * m_Dir.y * deltaTime;
 		objTransform->SetLocalPosition(currentPos.x, currentPos.y, currentPos.z);
 
 		// sprite rotation and switching

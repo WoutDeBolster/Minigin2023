@@ -26,15 +26,26 @@ void dae::CollisionComp::Update(float deltaTime)
 	{
 		CheckCollsionWithBlocks(deltaTime);
 		PushBlock(deltaTime);
+		if (m_SlowDownTimer > 0.f)
+		{
+			m_SlowDownTimer -= deltaTime;
+		}
 	}
+
+
 }
 
-bool dae::CollisionComp::IsOverlapping()
+bool dae::CollisionComp::IsOverlapping() const
 {
 	return m_IsOverlapping;
 }
 
-glm::vec2 dae::CollisionComp::GetHitDir()
+float dae::CollisionComp::GetSlowDownTimer() const
+{
+	return m_SlowDownTimer;
+}
+
+glm::vec2 dae::CollisionComp::GetHitDir() const
 {
 	return m_HitDirection;
 }
@@ -115,8 +126,10 @@ void dae::CollisionComp::CheckCollsionWithBlocks(float deltaTime)
 				{
 					BreakBlock(m_pPuchedObject);
 					m_BlockPushed = false;
-					//m_pObjs.emplace_back(std::move(m_pPuchedObject));
 					m_BlockNextToBlock = false;
+
+					// slow down player
+					m_SlowDownTimer = 2.f;
 				}
 			}
 			else

@@ -21,8 +21,9 @@ namespace dae
 		void AddEnemys(std::shared_ptr<GameObject> EnemyObjs);
 		void Update(float deltaTime) override;
 
-		bool IsOverlapping();
-		glm::f32vec2 GetHitDir();
+		bool IsOverlapping() const;
+		glm::f32vec2 GetHitDir() const;
+		float GetSlowDownTimer() const;
 
 	private:
 		void PushBlock(float deltaTime);
@@ -47,6 +48,7 @@ namespace dae
 		glm::f32vec2 m_PuchedObjectOriginalPos{};
 
 		// breaking
+		float m_SlowDownTimer{ 0.f };
 		bool m_BlockClose{ false };
 		bool m_BlockNextToBlock{ false };
 		float m_SpriteTimer{ 0.f };

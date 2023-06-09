@@ -41,5 +41,6 @@ namespace dae
 		bool m_IsMoving{ true };
 		bool m_KillAfterAnimation{ false };
 		float m_SpriteTimer{ 0.f };
+		float m_TimeInterval{ 0.5f };
 	};
 }

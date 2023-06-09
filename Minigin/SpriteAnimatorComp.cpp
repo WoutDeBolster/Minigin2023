@@ -14,14 +14,13 @@ dae::SpriteAnimatorComp::SpriteAnimatorComp(std::weak_ptr<GameObject> pOwner)
 void dae::SpriteAnimatorComp::Update(float deltaTime)
 {
 	// timer
-	const float timeInterval = 0.5f;
 	m_SpriteTimer += deltaTime;
 
 
 	// if there is more than 1 sprite on the current direction
 	if (m_Sprites[m_currentDirection].size() >= 1)
 	{
-		if (m_SpriteTimer >= timeInterval && m_IsMoving)
+		if (m_SpriteTimer >= m_TimeInterval && m_IsMoving)
 		{
 			// cycle to the next sprite
 			m_currentSpriteIndex = (m_currentSpriteIndex + 1) % m_Sprites[m_currentDirection].size();
@@ -68,6 +67,7 @@ void dae::SpriteAnimatorComp::SetDirectionalSprites(Direction direction, const s
 
 void dae::SpriteAnimatorComp::PlayAnimation(const std::vector<std::string>& spriteFiles, bool KillAfterAnimation)
 {
+	m_TimeInterval = 0.25f;
 	SetDirectionalSprites(Direction::Up, spriteFiles);
 	m_KillAfterAnimation = KillAfterAnimation;
 
