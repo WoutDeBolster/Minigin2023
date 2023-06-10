@@ -87,5 +87,5 @@ void dae::PlaySoundEffectCommand::Execute(float)
 {
 	ServisLocator::GetSoundSystem().InitSoundSystem();
 	ServisLocator::GetSoundSystem().RegisterSound(0, m_File);
-	ServisLocator::GetSoundSystem().play(0, 100);
+	ServisLocator::GetSoundSystem().play(0, 100, false);
 }

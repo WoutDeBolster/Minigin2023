@@ -31,6 +31,8 @@
 #include "Observer.h"
 #include "Block.h"
 #include "JSonReader.h"
+#include "SoundSystem.h"
+#include "AudioClip.h"
 
 dae::Minigin g_engine("../Data/");
 
@@ -133,13 +135,32 @@ void StandertBackground(dae::Scene& scene)
 	scene.Add(FPSCompCounter);
 }
 
-void load()
+void SoundLoading()
 {
-	auto reader = std::make_shared<JSonReader>("../Data/Level_3.json");
+#if _DEBUG
+	ServisLocator::RegisterSoundSystem(std::make_shared<LogginSoundSystem>(std::make_shared<SdlSoundSystem>()));
+#else
+	ServisLocator::RegisterSoundSystem(std::make_shared<SdlSoundSystem>());
+#endif
+	// first test play
+	//ServisLocator::RegisterSoundSystem(std::make_shared<LogginSoundSystem>(std::make_shared < SdlSoundSystem>()));
+
+	ServisLocator::GetSoundSystem().InitSoundSystem();
+	ServisLocator::GetSoundSystem().RegisterSound(0, "../Data/Main BGM (Popcorn).mp3");
+	ServisLocator::GetSoundSystem().RegisterSound(1, "../Data/Block Stopped.mp3");
+	ServisLocator::GetSoundSystem().RegisterSound(2, "../Data/Touch Snow-Bee.mp3");
+	ServisLocator::GetSoundSystem().RegisterSound(3, "../Data/Snow-Bee Squashed.mp3");
+	ServisLocator::GetSoundSystem().play(0, 50, true);
+}
+
+void MakeLevel(std::string levelFile)
+{
+	auto reader = std::make_shared<JSonReader>(levelFile);
 	auto& scene = reader->MakeLevel();
 	auto pBlocks = reader->GetBlocks();
 
 	StandertBackground(scene);
+	SoundLoading();
 
 	glm::ivec2 blockSize{ 32, 32 };
 	std::vector<std::shared_ptr<GameObject>> pEnemys;
@@ -214,6 +235,13 @@ void load()
 	player1->AddComponent(spriteComp);
 	player1->AddComponent(pointsComp);
 	player1->AddComponent(healthComp);
+}
+
+void load()
+{
+	MakeLevel("../Data/Level_1.json");
+	MakeLevel("../Data/Level_2.json");
+	MakeLevel("../Data/Level_3.json");
 }
 
 int main(int, char* []) {

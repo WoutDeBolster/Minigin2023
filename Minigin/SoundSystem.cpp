@@ -11,7 +11,7 @@ public:
 	virtual ~sdlSoundSystemImpl();
 
 	void InitSoundSystem();
-	void play(const sound_id id, const int volume);
+	void play(const sound_id id, const int volume, bool loopSound);
 	void RegisterSound(const sound_id id, const std::string& path);
 
 private:
@@ -45,13 +45,14 @@ void SdlSoundSystem::InitSoundSystem()
 	m_AudioClips.resize(50);
 }
 
-void SdlSoundSystem::play(const sound_id id, const int volume)
+void SdlSoundSystem::play(const sound_id id, const int volume, bool loopSound)
 {
 	auto audioClip = m_AudioClips[id];
-	if (audioClip->IsLoaded() == false)
+	if (audioClip->IsSoundLoaded() == false)
 	{
 		audioClip->LoadSound();
 	}
+	audioClip->SetLoop(loopSound);
 	audioClip->SetVolume(volume);
 	audioClip->PlaySound();
 }
@@ -77,13 +78,14 @@ void SdlSoundSystem::sdlSoundSystemImpl::InitSoundSystem()
 	m_AudioClips.resize(50);
 }
 
-void SdlSoundSystem::sdlSoundSystemImpl::play(const sound_id id, const int volume)
+void SdlSoundSystem::sdlSoundSystemImpl::play(const sound_id id, const int volume, bool loopSound)
 {
 	auto audioClip = m_AudioClips[id];
-	if (audioClip->IsLoaded() == false)
+	if (audioClip->IsSoundLoaded() == false)
 	{
 		audioClip->LoadSound();
 	}
+	audioClip->SetLoop(loopSound);
 	audioClip->SetVolume(volume);
 	audioClip->PlaySound();
 }

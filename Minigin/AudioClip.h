@@ -13,21 +13,24 @@ public:
 	AudioClip& operator= (const AudioClip&) = delete;
 	AudioClip& operator= (const AudioClip&&) = delete;
 
-	void LoadMusic();
 	void LoadSound();
 
-	bool IsLoaded();
+	bool IsSoundLoaded();
 
-	void PlayMusic();
 	void PlaySound();
 
 	void SetVolume(int volume);
 	int GetVolume();
 
+	void SetLoop(bool loopSound);
+
 private:
 	Mix_Chunk* m_pSound = nullptr;
+	Mix_Chunk* m_pMusic = nullptr;
 	std::string m_FileName;
 
-	bool m_IsLoaded = false;
+	bool m_IsSoundLoaded = false;
+	bool m_IsMusicLoaded = false;
+	bool m_LoopSound = false;
 	int m_Volume = 0;
 };

@@ -4,6 +4,7 @@
 #include "EnemyComp.h"
 #include "HealthComp.h"
 #include "PointsComp.h"
+#include "SoundSystem.h"
 #include <iostream>
 
 dae::CollisionComp::CollisionComp(std::weak_ptr<GameObject> pOwner, glm::ivec2 textureSize)
@@ -205,6 +206,9 @@ void dae::CollisionComp::CheckCollsionPushedObj(std::weak_ptr<Block> block, floa
 				currentPos.x -= m_SlidingSpeed * m_SlideDir.x * deltaTime * 1.5f;
 				currentPos.y -= m_SlidingSpeed * m_SlideDir.y * deltaTime * 1.5f;
 				m_pPuchedObject->GetBlockObj()->SetLocalPosition(currentPos.x, currentPos.y);
+
+				// sound
+				ServisLocator::GetSoundSystem().play(1, 50, false);
 
 				break;
 			}

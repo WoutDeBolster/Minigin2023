@@ -16,21 +16,29 @@ void AudioClip::LoadSound()
 	Mix_Chunk* m{ Mix_LoadWAV(m_FileName.c_str()) };
 	if (m == nullptr)
 	{
-		std::cout << "loadMusic failed " << Mix_GetError() << std::endl;
+		std::cout << "loadSound failed " << Mix_GetError() << std::endl;
 	}
 	m_pSound = m;
-	m_IsLoaded = true;
+	m_IsSoundLoaded = true;
 }
 
-bool AudioClip::IsLoaded()
+bool AudioClip::IsSoundLoaded()
 {
-	return m_IsLoaded;
+	return m_IsSoundLoaded;
 }
 
 void AudioClip::PlaySound()
 {
 	m_pSound->volume = static_cast<Uint8>(m_Volume);
-	Mix_PlayChannel(-1, m_pSound, 0);
+	if (m_LoopSound)
+	{
+		Mix_PlayChannel(-1, m_pSound, -1);
+	}
+	else
+	{
+		Mix_PlayChannel(-1, m_pSound, 0);
+	}
+
 }
 
 void AudioClip::SetVolume(int volume)
@@ -41,4 +49,9 @@ void AudioClip::SetVolume(int volume)
 int AudioClip::GetVolume()
 {
 	return m_Volume;
+}
+
+void AudioClip::SetLoop(bool loopSound)
+{
+	m_LoopSound = loopSound;
 }

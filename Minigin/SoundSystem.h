@@ -13,7 +13,7 @@ class SoundSystem
 public:
 	virtual ~SoundSystem() = default;
 
-	virtual void play(const sound_id id, const int volume) = 0;
+	virtual void play(const sound_id id, const int volume, bool loopSound) = 0;
 	virtual void RegisterSound(const sound_id id, const std::string& path) = 0;
 	virtual void InitSoundSystem() = 0;
 };
@@ -26,7 +26,7 @@ public:
 
 	void AddAudio(std::shared_ptr<AudioClip> audio);
 	void InitSoundSystem();
-	void play(const sound_id id, const int volume) override;
+	void play(const sound_id id, const int volume, bool loopSound) override;
 	void RegisterSound(const sound_id id, const std::string& path);
 
 private:
@@ -39,7 +39,7 @@ class NullSoundSystem final : public SoundSystem
 {
 private:
 	void InitSoundSystem() override {}
-	void play(const sound_id, const int) override {}
+	void play(const sound_id, const int, bool) override {}
 	void RegisterSound(const sound_id, const std::string&) {}
 };
 
@@ -79,10 +79,10 @@ public:
 		m_ss_real->RegisterSound(id, path);
 		std::cout << "registering sound with path: " << path << std::endl;
 	}
-	void play(const sound_id id, const int volume) override
+	void play(const sound_id id, const int volume, bool loopSound) override
 	{
-		m_ss_real->play(id, volume);
-		std::cout << "playing " << id << " at volume " << volume << std::endl;
+		m_ss_real->play(id, volume, loopSound);
+		std::cout << "playing: " << id << " at volume " << volume << std::endl;
 	}
 
 private:
