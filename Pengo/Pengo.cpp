@@ -135,7 +135,7 @@ void StandertBackground(dae::Scene& scene)
 
 void load()
 {
-	auto reader = std::make_shared<JSonReader>("../Data/Level.json");
+	auto reader = std::make_shared<JSonReader>("../Data/Level_3.json");
 	auto& scene = reader->MakeLevel();
 	auto pBlocks = reader->GetBlocks();
 
