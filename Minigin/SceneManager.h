@@ -12,6 +12,9 @@ namespace dae
 	public:
 		Scene& CreateScene(const std::string& name);
 
+		void SetSceneActive(const std::string& name, bool isActive);
+		bool IsSceneActive(const std::string& name);
+
 		void Update(float deltaTime);
 		void FixedUpdate(float fixedTime);
 		void Render();

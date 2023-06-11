@@ -19,6 +19,7 @@ namespace dae
 
 		dae::Scene& MakeLevel();
 		std::vector<std::shared_ptr<Block>> GetBlocks() const;
+		std::vector<std::shared_ptr<GameObject>> GetEnemys() const;
 
 	private:
 		std::string m_File;
@@ -26,6 +27,7 @@ namespace dae
 		// level objects
 		std::string m_LevelName{};
 		std::vector<std::shared_ptr<Block>> m_pBlocks;
+		std::vector<std::shared_ptr<GameObject>> m_pEnemys;
 	};
 }
 

@@ -53,7 +53,7 @@ std::shared_ptr<GameObject> MakeTextObj(glm::vec2 pos, const std::string& text,
 	return textObj;
 }
 
-std::shared_ptr<GameObject> MakePlayer(unsigned int playerIdx, glm::vec2 pos, Scene& scene)
+std::shared_ptr<GameObject> MakePlayer(unsigned int, glm::vec2 pos, Scene& scene)
 {
 	//// fonts
 	//std::shared_ptr<Font> font = ResourceManager::GetInstance().LoadFont("Lingua.otf", 36);
@@ -73,14 +73,14 @@ std::shared_ptr<GameObject> MakePlayer(unsigned int playerIdx, glm::vec2 pos, Sc
 	auto& input = InputManager::GetInstance();
 
 	// player 1
-	input.SetGamePadCommand(playerIdx, dae::GamePad::ControllerButton::Dpad_Down,
-		new MoveCommand(player, playerSpeed, glm::f32vec2{ 0.f, 1.f }), InputType::keyPressed);
-	input.SetGamePadCommand(playerIdx, dae::GamePad::ControllerButton::Dpad_Right,
-		new MoveCommand(player, playerSpeed, glm::f32vec2{ 1.f, 0.f }), InputType::keyPressed);
-	input.SetGamePadCommand(playerIdx, dae::GamePad::ControllerButton::Dpad_Up,
-		new MoveCommand(player, playerSpeed, glm::f32vec2{ 0.f, -1.f }), InputType::keyPressed);
-	input.SetGamePadCommand(playerIdx, dae::GamePad::ControllerButton::Dpad_Left,
-		new MoveCommand(player, playerSpeed, glm::f32vec2{ -1.f, 0.f }), InputType::keyPressed);
+	input.SetGamePadCommand(dae::GamePad::ControllerButton::Dpad_Down,
+		new MoveCommand(player, playerSpeed, glm::f32vec2{ 0.f, 1.f }), InputType::keyPressed, scene.GetSceneName());
+	input.SetGamePadCommand(dae::GamePad::ControllerButton::Dpad_Right,
+		new MoveCommand(player, playerSpeed, glm::f32vec2{ 1.f, 0.f }), InputType::keyPressed, scene.GetSceneName());
+	input.SetGamePadCommand(dae::GamePad::ControllerButton::Dpad_Up,
+		new MoveCommand(player, playerSpeed, glm::f32vec2{ 0.f, -1.f }), InputType::keyPressed, scene.GetSceneName());
+	input.SetGamePadCommand(dae::GamePad::ControllerButton::Dpad_Left,
+		new MoveCommand(player, playerSpeed, glm::f32vec2{ -1.f, 0.f }), InputType::keyPressed, scene.GetSceneName());
 
 	scene.Add(player);
 
@@ -156,66 +156,28 @@ void SoundLoading()
 void MakeLevel(std::string levelFile)
 {
 	auto reader = std::make_shared<JSonReader>(levelFile);
-	auto& scene = reader->MakeLevel();
+	auto& sceneLevel = reader->MakeLevel();
 	auto pBlocks = reader->GetBlocks();
+	auto pEnemys = reader->GetEnemys();
 
-	StandertBackground(scene);
-	SoundLoading();
+	StandertBackground(sceneLevel);
 
 	glm::ivec2 blockSize{ 32, 32 };
-	std::vector<std::shared_ptr<GameObject>> pEnemys;
 
 	// fonts
-	std::shared_ptr<Font> font = ResourceManager::GetInstance().LoadFont("Lingua.otf", 36);
 	std::shared_ptr<Font> font2 = ResourceManager::GetInstance().LoadFont("Lingua.otf", 18);
 
 	// health board
-	auto health = MakeTextObj({ 34.f, 50.f }, "Lives: 3", font2, SDL_Color{ 1, 1, 1, 1 }, scene);
+	auto health = MakeTextObj({ 34.f, 50.f }, "Lives: 3", font2, SDL_Color{ 1, 1, 1, 1 }, sceneLevel);
 	auto healthBoard = std::make_shared<HealthBoardComp>(health);
 
 	// score board
-	auto score = MakeTextObj({ 420.f, 50.f }, "Score: 0", font2, SDL_Color{ 1, 1, 1, 1 }, scene);
+	auto score = MakeTextObj({ 420.f, 50.f }, "Score: 0", font2, SDL_Color{ 1, 1, 1, 1 }, sceneLevel);
 	auto scoreBoard = std::make_shared<ScoreBoardComp>(score);
 
-	// enemys
-	auto enemy = std::make_shared<GameObject>();
-	enemy.get()->Initialize();
-	auto actorEnemy = std::make_shared<EnemyComp>(enemy);
-	actorEnemy->SetRandomMovement(true);
-
-	auto colCompEnemy = std::make_shared<CollisionComp>(enemy, blockSize);
-	for (size_t i = 0; i < pBlocks.size(); i++)
-	{
-		colCompEnemy->AddObject(pBlocks[i]);
-	}
-
-	auto spriteCompEnemy = std::make_shared<SpriteAnimatorComp>(enemy);
-	spriteCompEnemy->SetDirectionalSprites(Direction::Down, { "Enemys/Enemy_09.png", "Enemys/Enemy_10.png" });
-	spriteCompEnemy->SetDirectionalSprites(Direction::Left, { "Enemys/Enemy_11.png", "Enemys/Enemy_12.png" });
-	spriteCompEnemy->SetDirectionalSprites(Direction::Up, { "Enemys/Enemy_13.png", "Enemys/Enemy_14.png" });
-	spriteCompEnemy->SetDirectionalSprites(Direction::Right, { "Enemys/Enemy_15.png", "Enemys/Enemy_16.png" });
-
-	actorEnemy->GetEnemySubject()->AddObserver(healthBoard);
-
-	enemy->AddComponent(actorEnemy);
-	enemy->AddComponent(spriteCompEnemy);
-	enemy->AddComponent(colCompEnemy);
-
-	enemy->SetLocalPosition(236.f, 336.f);
-	scene.Add(enemy);
-	pEnemys.push_back(enemy);
-
 	// player and collision
-	auto player1 = MakePlayer(0, { 264.f, 300.f }, scene);
-	auto colComp = std::make_shared<CollisionComp>(player1, blockSize);
-	for (size_t i = 0; i < pBlocks.size(); i++)
-	{
-		colComp->AddObject(pBlocks[i]);
-	}
-	for (size_t i = 0; i < pEnemys.size(); i++)
-	{
-		colComp->AddEnemys(pEnemys[i]);
-	}
+	auto player1 = MakePlayer(0, { 264.f, 300.f }, sceneLevel);
+	auto colComp = std::make_shared<CollisionComp>(player1, blockSize, pBlocks, pEnemys);
 
 	// sprites
 	auto spriteComp = std::make_shared<SpriteAnimatorComp>(player1);
@@ -235,6 +197,11 @@ void MakeLevel(std::string levelFile)
 	player1->AddComponent(spriteComp);
 	player1->AddComponent(pointsComp);
 	player1->AddComponent(healthComp);
+
+	if (levelFile != "../Data/Level_1.json")
+	{
+		sceneLevel.SetSceneActivity(false);
+	}
 }
 
 void load()

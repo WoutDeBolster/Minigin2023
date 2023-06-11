@@ -59,3 +59,18 @@ void Scene::Render() const
 	}
 }
 
+void dae::Scene::SetSceneActivity(bool isActive)
+{
+	m_IsActive = isActive;
+}
+
+bool dae::Scene::IsSceneActive() const
+{
+	return m_IsActive;
+}
+
+std::string dae::Scene::GetSceneName() const
+{
+	return m_name;
+}
+

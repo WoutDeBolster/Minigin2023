@@ -9,7 +9,8 @@ namespace dae
 	class CollisionComp final : public BaseComponent
 	{
 	public:
-		CollisionComp(std::weak_ptr<GameObject> pOwner, glm::ivec2 textureSize);
+		CollisionComp(std::weak_ptr<GameObject> pOwner, glm::ivec2 textureSize,
+			std::vector<std::shared_ptr<Block>> blockObjs, std::vector<std::shared_ptr<GameObject>> EnemyObjs);
 		virtual ~CollisionComp() = default;
 
 		CollisionComp(const CollisionComp&) = delete;
@@ -55,7 +56,7 @@ namespace dae
 		float m_SpriteTimer{ 0.f };
 
 		// enemy
-
+		bool m_AllEnemysDead{ false };
 	};
 }
 

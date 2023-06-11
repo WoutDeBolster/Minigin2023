@@ -5,11 +5,16 @@
 #include "HealthComp.h"
 #include "PointsComp.h"
 #include "SoundSystem.h"
+#include "SceneManager.h"
+#include "InputManager.h"
 #include <iostream>
 
-dae::CollisionComp::CollisionComp(std::weak_ptr<GameObject> pOwner, glm::ivec2 textureSize)
+dae::CollisionComp::CollisionComp(std::weak_ptr<GameObject> pOwner, glm::ivec2 textureSize,
+	std::vector<std::shared_ptr<Block>> blockObjs, std::vector<std::shared_ptr<GameObject>> EnemyObjs)
 	: BaseComponent(pOwner)
 	, m_ObjTexSize{ textureSize }
+	, m_pBlockObjs{ blockObjs }
+	, m_pEnemyObjs{ EnemyObjs }
 {
 }
 
@@ -35,9 +40,14 @@ void dae::CollisionComp::Update(float deltaTime)
 		}
 	}
 
-	if (m_pEnemyObjs.size() > 0)
+	if (m_pEnemyObjs.size() > 0 && m_AllEnemysDead == false)
 	{
 		CheckCollisionWithEnemys();
+	}
+	if (m_pEnemyObjs.empty() && m_AllEnemysDead)
+	{
+		SceneManager::GetInstance().SetSceneActive("Level1", false);
+		SceneManager::GetInstance().SetSceneActive("Level2", true);
 	}
 }
 
@@ -87,7 +97,7 @@ void dae::CollisionComp::CheckCollsionWithBlocks(float deltaTime)
 			ownerPos.y + ownerSize.y >= objPos.y)
 		{
 			m_IsOverlapping = true;
-			std::cout << "Hit" << std::endl;
+			//std::cout << "Hit" << std::endl;
 
 			// getting direction between player and block
 			m_HitDirection = GetDirection(objPos, m_ObjTexSize, ownerPos, ownerSize);
@@ -225,11 +235,15 @@ void dae::CollisionComp::CheckCollsionPushedObj(std::weak_ptr<Block> block, floa
 			ownerPos.y <= objPos.y + m_ObjTexSize.y &&
 			ownerPos.y + m_ObjTexSize.y >= objPos.y)
 		{
-			std::cout << "Hit Enemy" << std::endl;
+			//std::cout << "Hit Enemy" << std::endl;
 
 			m_pEnemyObjs[i]->GetComponent<EnemyComp>()->Die();
 			GetGameObject().lock()->GetComponent<PointsComp>()->AddPoints(100);
 			m_pEnemyObjs.erase(std::remove(m_pEnemyObjs.begin(), m_pEnemyObjs.end(), m_pEnemyObjs[i]));
+			if (m_pEnemyObjs.empty())
+			{
+				m_AllEnemysDead = true;
+			}
 		}
 	}
 }
@@ -238,9 +252,9 @@ void dae::CollisionComp::BreakBlock(std::weak_ptr<Block> block)
 {
 	// TODO: this is so skuffed plz fix this
 	std::vector<std::string> BreakableObjFiles{ "Blocks/BreakingBlock_01.png", "Blocks/BreakingBlock_02.png",
-												"Blocks/BreakingBlock_03.png" , "Blocks/BreakingBlock_04.png" ,
-												"Blocks/BreakingBlock_05.png", "Blocks/BreakingBlock_06.png",
-												"Blocks/BreakingBlock_07.png", "Blocks/BreakingBlock_08.png" };
+		"Blocks/BreakingBlock_03.png", "Blocks/BreakingBlock_04.png",
+		"Blocks/BreakingBlock_05.png", "Blocks/BreakingBlock_06.png",
+		"Blocks/BreakingBlock_07.png", "Blocks/BreakingBlock_08.png" };
 
 	if (block.lock()->GetBlockObj()->GetComponent<SpriteAnimatorComp>() != nullptr)
 	{

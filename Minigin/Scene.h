@@ -1,5 +1,6 @@
 #pragma once
 #include "SceneManager.h"
+#include "imgui.h"
 
 namespace dae
 {
@@ -21,6 +22,11 @@ namespace dae
 		void Update(float deltaTime);
 		void FixedUpdate(float fixedTime);
 		void Render() const;
+
+		void SetSceneActivity(bool isActive);
+		bool IsSceneActive() const;
+
+		std::string GetSceneName() const;
 	private:
 		explicit Scene(const std::string& name);
 
@@ -28,6 +34,7 @@ namespace dae
 		std::vector < std::shared_ptr<GameObject>> m_objects{};
 
 		static unsigned int m_idCounter;
+		bool m_IsActive{ true };
 	};
 
 }
