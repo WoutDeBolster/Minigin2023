@@ -18,6 +18,7 @@ public:
 	bool IsSoundLoaded();
 
 	void PlaySound();
+	void PauzeSound();
 
 	void SetVolume(int volume);
 	int GetVolume();
@@ -32,5 +33,6 @@ private:
 	bool m_IsSoundLoaded = false;
 	bool m_IsMusicLoaded = false;
 	bool m_LoopSound = false;
+	bool m_SoundPauzed = false;
 	int m_Volume = 0;
 };

@@ -36,11 +36,14 @@ void dae::SpriteAnimatorComp::Update(float deltaTime)
 
 void dae::SpriteAnimatorComp::Render() const
 {
-	if (!m_Sprites.at(m_currentDirection).empty())
+	if (!m_Sprites.empty())
 	{
-		const auto& pos = GetGameObject().lock()->GetWorldPosition();
-		const auto currentSprite = m_Sprites.at(m_currentDirection)[m_currentSpriteIndex];
-		Renderer::GetInstance().RenderTexture(*currentSprite, pos.x, pos.y);
+		if (!m_Sprites.at(m_currentDirection).empty())
+		{
+			const auto& pos = GetGameObject().lock()->GetWorldPosition();
+			const auto currentSprite = m_Sprites.at(m_currentDirection)[m_currentSpriteIndex];
+			Renderer::GetInstance().RenderTexture(*currentSprite, pos.x, pos.y);
+		}
 	}
 }
 

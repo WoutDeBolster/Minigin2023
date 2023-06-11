@@ -12,6 +12,7 @@ public:
 
 	void InitSoundSystem();
 	void play(const sound_id id, const int volume, bool loopSound);
+	void PauzeSound(const sound_id id);
 	void RegisterSound(const sound_id id, const std::string& path);
 
 private:
@@ -57,6 +58,12 @@ void SdlSoundSystem::play(const sound_id id, const int volume, bool loopSound)
 	audioClip->PlaySound();
 }
 
+void SdlSoundSystem::PauzeSound(const sound_id id)
+{
+	auto audioClip = m_AudioClips[id];
+	audioClip->PauzeSound();
+}
+
 void SdlSoundSystem::RegisterSound(const sound_id id, const std::string& path)
 {
 	auto audioClip = std::make_shared<AudioClip>(path);
@@ -88,6 +95,12 @@ void SdlSoundSystem::sdlSoundSystemImpl::play(const sound_id id, const int volum
 	audioClip->SetLoop(loopSound);
 	audioClip->SetVolume(volume);
 	audioClip->PlaySound();
+}
+
+void SdlSoundSystem::sdlSoundSystemImpl::PauzeSound(const sound_id id)
+{
+	auto audioClip = m_AudioClips[id];
+	audioClip->PauzeSound();
 }
 
 void SdlSoundSystem::sdlSoundSystemImpl::RegisterSound(const sound_id id, const std::string& path)

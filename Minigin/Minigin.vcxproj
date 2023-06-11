@@ -219,7 +219,6 @@
     <ClInclude Include="Minigin.h" />
     <ClInclude Include="JSonReader.h" />
     <ClInclude Include="Observer.h" />
-    <ClInclude Include="PlayerState.h" />
     <ClInclude Include="PointsComp.h" />
     <ClInclude Include="rapidjson\allocators.h" />
     <ClInclude Include="rapidjson\cursorstreamwrapper.h" />

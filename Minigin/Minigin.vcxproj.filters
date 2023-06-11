@@ -174,9 +174,6 @@
     <ClInclude Include="CollisionComp.h">
       <Filter>Header Files\Components</Filter>
     </ClInclude>
-    <ClInclude Include="PlayerState.h">
-      <Filter>Header Files\Input</Filter>
-    </ClInclude>
     <ClInclude Include="rapidjson\filewritestream.h">
       <Filter>Header Files\rapidjson</Filter>
     </ClInclude>

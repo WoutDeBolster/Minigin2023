@@ -6,9 +6,12 @@ void dae::SceneManager::Update(float deltaTime)
 {
 	for (auto& scene : m_scenes)
 	{
-		if (scene->IsSceneActive())
+		if (scene != nullptr)
 		{
-			scene->Update(deltaTime);
+			if (scene->IsSceneActive())
+			{
+				scene->Update(deltaTime);
+			}
 		}
 	}
 }
@@ -17,9 +20,12 @@ void dae::SceneManager::FixedUpdate(float fixedTime)
 {
 	for (auto& scene : m_scenes)
 	{
-		if (scene->IsSceneActive())
+		if (scene != nullptr)
 		{
-			scene->FixedUpdate(fixedTime);
+			if (scene->IsSceneActive())
+			{
+				scene->FixedUpdate(fixedTime);
+			}
 		}
 	}
 }
@@ -28,9 +34,12 @@ void dae::SceneManager::Render()
 {
 	for (const auto& scene : m_scenes)
 	{
-		if (scene->IsSceneActive())
+		if (scene != nullptr)
 		{
-			scene->Render();
+			if (scene->IsSceneActive())
+			{
+				scene->Render();
+			}
 		}
 	}
 }
@@ -40,6 +49,14 @@ dae::Scene& dae::SceneManager::CreateScene(const std::string& name)
 	const auto& scene = std::shared_ptr<Scene>(new Scene(name));
 	m_scenes.push_back(scene);
 	return *scene;
+}
+
+void dae::SceneManager::RemoveScene(const std::string& name)
+{
+	m_scenes.erase(std::remove_if(m_scenes.begin(), m_scenes.end(), [&](std::shared_ptr<Scene> pScene)
+		{
+			return pScene->GetSceneName() == name;
+		}));
 }
 
 void dae::SceneManager::SetSceneActive(const std::string& name, bool isActive)
@@ -63,4 +80,17 @@ bool dae::SceneManager::IsSceneActive(const std::string& name)
 		}
 	}
 	return false;
+}
+
+dae::Scene& dae::SceneManager::GetActiveScene()
+{
+	for (auto& scene : m_scenes)
+	{
+		if (scene->IsSceneActive())
+		{
+			return *scene;
+		}
+	}
+
+	return *m_scenes[0];
 }

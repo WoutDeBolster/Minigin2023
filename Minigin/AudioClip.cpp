@@ -38,7 +38,20 @@ void AudioClip::PlaySound()
 	{
 		Mix_PlayChannel(-1, m_pSound, 0);
 	}
+}
 
+void AudioClip::PauzeSound()
+{
+	if (m_SoundPauzed)
+	{
+		Mix_Resume(-1);
+		m_SoundPauzed = false;
+	}
+	else
+	{
+		Mix_Pause(-1);
+		m_SoundPauzed = true;
+	}
 }
 
 void AudioClip::SetVolume(int volume)

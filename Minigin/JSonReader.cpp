@@ -2,10 +2,12 @@
 #include <cstdio>
 #include <iostream>
 #include <fstream>
+#include <filesystem>
 #include "rapidjson/filereadstream.h"
 #include "rapidjson/stringbuffer.h"
 #include "rapidjson/document.h"
 #include "rapidjson/istreamwrapper.h"
+#include "rapidjson/writer.h"
 #include "SceneManager.h"
 #include "SpriteAnimatorComp.h"
 #include "ResourceManager.h"
@@ -15,16 +17,16 @@
 #include <memory>
 #include "EnemyComp.h"
 #include "CollisionComp.h"
+#include "Font.h"
 
-dae::JSonReader::JSonReader(std::string fileLoc)
-	: m_File{ fileLoc }
+dae::Scene& dae::JSonReader::MakeLevel(const std::string& filePath)
 {
-}
+	// clear last values if there were any
+	m_pBlocks.clear();
+	m_pEnemys.clear();
 
-dae::Scene& dae::JSonReader::MakeLevel()
-{
 	// Open the file
-	std::ifstream is{ m_File };
+	std::ifstream is{ filePath };
 
 	assert(!is.fail() && "File Not found");
 
@@ -106,6 +108,113 @@ dae::Scene& dae::JSonReader::MakeLevel()
 
 	// enemys
 	// health board
+	MakeEnemy({ LevelOffset.x + borderSize, (8 * 32.f) + LevelOffset.y + borderSize }, scene);
+	MakeEnemy({ (12 * 32) + LevelOffset.x + borderSize, LevelOffset.y + borderSize }, scene);
+	MakeEnemy({ (12 * 32) + LevelOffset.x + borderSize, (14 * 32.f) + LevelOffset.y + borderSize }, scene);
+
+
+	return scene;
+}
+
+dae::Scene& dae::JSonReader::MakeScoreScene(const std::string& sceneName)
+{
+	// making Scene
+	auto& scene = SceneManager::GetInstance().CreateScene(sceneName);
+
+	// make text Objects and place them
+	std::shared_ptr<Font> font = ResourceManager::GetInstance().LoadFont("Lingua.otf", 36);
+	for (size_t i = 0; i < m_Scores.size(); i++)
+	{
+		// stop at number 10
+		if (i == 10.f)
+		{
+			break;
+		}
+		auto textObj = std::make_shared<GameObject>();
+		textObj->Initialize();
+		auto textComp = std::make_shared<TextComp>(textObj, std::to_string(i + 1) + ": " + std::to_string(m_Scores[i]), font, SDL_Color{ 1, 1, 1, 1 });
+
+		textObj->AddComponent(textComp);
+		textObj->SetLocalPosition(220.f, (50.f * i) + 50.f);
+		scene.Add(textObj);
+	}
+
+	return scene;
+}
+
+void dae::JSonReader::ReadHighScore(const std::string& filePath)
+{
+	// getting highscores
+	std::vector<int> scores{ };
+	std::ifstream is{ filePath };
+
+	assert(!is.fail() && "File Not found");
+
+	rapidjson::IStreamWrapper isw{ is };
+	rapidjson::Document document;
+	document.ParseStream(isw);
+
+	assert(document.IsArray() && "Json Highscore needs an array");
+
+	const rapidjson::Value& scoresJson = document;
+
+	for (size_t i = 0; i < scoresJson.Size(); i++)
+	{
+		scores.push_back(scoresJson[i].GetInt());
+	}
+
+	// sort them just to be sure
+	std::sort(scores.begin(), scores.end(), std::greater());
+	m_Scores = scores;
+}
+
+void dae::JSonReader::WriteHighscore(const std::string& filePath)
+{
+	// opening file
+	std::ofstream os{ filePath };
+
+	assert(!os.fail() && "File Not found");
+
+	rapidjson::Document document;
+	document.SetArray();
+
+	// adding new score
+	m_Scores.push_back(m_CurrentScore);
+
+	// writing data	
+	for (size_t i = 0; i < m_Scores.size(); i++)
+	{
+		rapidjson::Value value;
+		value.SetInt(m_Scores[i]);
+		document.PushBack(value, document.GetAllocator());
+	}
+
+	rapidjson::StringBuffer buffer;
+	rapidjson::Writer<rapidjson::StringBuffer> writer(buffer);
+	document.Accept(writer);
+
+	std::string jsonString = buffer.GetString();
+
+	os << jsonString;
+}
+
+void dae::JSonReader::AddToTotalScore(int score)
+{
+	m_CurrentScore += score;
+}
+
+std::vector<std::shared_ptr<dae::Block>> dae::JSonReader::GetBlocks() const
+{
+	return m_pBlocks;
+}
+
+std::vector<std::shared_ptr<dae::GameObject>> dae::JSonReader::GetEnemys() const
+{
+	return m_pEnemys;
+}
+
+void dae::JSonReader::MakeEnemy(glm::vec2 pos, dae::Scene& scene)
+{
 	glm::ivec2 blockSize{ 32, 32 };
 
 	auto health = std::make_shared<GameObject>();
@@ -130,19 +239,7 @@ dae::Scene& dae::JSonReader::MakeLevel()
 	enemy->AddComponent(spriteCompEnemy);
 	enemy->AddComponent(colCompEnemy);
 
-	enemy->SetLocalPosition(236.f, 336.f);
+	enemy->SetLocalPosition(pos.x, pos.y);
 	scene.Add(enemy);
 	m_pEnemys.push_back(enemy);
-
-	return scene;
-}
-
-std::vector<std::shared_ptr<dae::Block>> dae::JSonReader::GetBlocks() const
-{
-	return m_pBlocks;
-}
-
-std::vector<std::shared_ptr<dae::GameObject>> dae::JSonReader::GetEnemys() const
-{
-	return m_pEnemys;
 }

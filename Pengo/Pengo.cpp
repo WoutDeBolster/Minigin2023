@@ -150,17 +150,17 @@ void SoundLoading()
 	ServisLocator::GetSoundSystem().RegisterSound(1, "../Data/Block Stopped.mp3");
 	ServisLocator::GetSoundSystem().RegisterSound(2, "../Data/Touch Snow-Bee.mp3");
 	ServisLocator::GetSoundSystem().RegisterSound(3, "../Data/Snow-Bee Squashed.mp3");
-	ServisLocator::GetSoundSystem().play(0, 50, true);
+	ServisLocator::GetSoundSystem().play(0, 30, true);
 }
 
 void MakeLevel(std::string levelFile)
 {
-	auto reader = std::make_shared<JSonReader>(levelFile);
-	auto& sceneLevel = reader->MakeLevel();
-	auto pBlocks = reader->GetBlocks();
-	auto pEnemys = reader->GetEnemys();
+	auto& sceneLevel = JSonReader::GetInstance().MakeLevel(levelFile);
+	auto pBlocks = JSonReader::GetInstance().GetBlocks();
+	auto pEnemys = JSonReader::GetInstance().GetEnemys();
 
 	StandertBackground(sceneLevel);
+	SoundLoading();
 
 	glm::ivec2 blockSize{ 32, 32 };
 

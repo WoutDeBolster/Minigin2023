@@ -9,6 +9,7 @@ namespace dae
 		EnemyDie,
 		GainPoints,
 		HealthChanged,
+		GameDone,
 	};
 
 	class Observer

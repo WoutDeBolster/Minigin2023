@@ -18,6 +18,11 @@ void dae::ActorComp::Die()
 	m_pActorChanged.get()->Notify(*GetGameObject().lock().get(), Event::ActorDie);
 }
 
+void dae::ActorComp::GameWon()
+{
+	m_pActorChanged.get()->Notify(*GetGameObject().lock().get(), Event::GameDone);
+}
+
 dae::Subject* dae::ActorComp::GetActorSubject() const
 {
 	return m_pActorChanged.get();

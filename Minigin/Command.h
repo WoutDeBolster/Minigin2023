@@ -58,6 +58,16 @@ namespace dae
 	private:
 		std::string m_File;
 	};
+
+
+	class SkipLevelCommand final : public Command
+	{
+	public:
+		SkipLevelCommand();
+
+		void Execute(float deltaTime) override;
+	private:
+	};
 }
 
 

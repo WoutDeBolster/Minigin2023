@@ -3,6 +3,8 @@
 #include "SoundSystem.h"
 #include "CollisionComp.h"
 #include "SpriteAnimatorComp.h"
+#include "SceneManager.h"
+#include "Scene.h"
 
 dae::MoveCommand::MoveCommand(std::shared_ptr<GameObject> object, float speed, glm::f32vec2 dir)
 	: m_pObj{ object }
@@ -88,4 +90,28 @@ void dae::PlaySoundEffectCommand::Execute(float)
 	ServisLocator::GetSoundSystem().InitSoundSystem();
 	ServisLocator::GetSoundSystem().RegisterSound(0, m_File);
 	ServisLocator::GetSoundSystem().play(0, 100, false);
+}
+
+dae::SkipLevelCommand::SkipLevelCommand()
+{
+}
+
+void dae::SkipLevelCommand::Execute(float)
+{
+	auto activeSceneName = SceneManager::GetInstance().GetActiveScene().GetSceneName();
+	if (activeSceneName == "Level1")
+	{
+		SceneManager::GetInstance().SetSceneActive("Level1", false);
+		SceneManager::GetInstance().SetSceneActive("Level2", true);
+	}
+	if (activeSceneName == "Level2")
+	{
+		SceneManager::GetInstance().SetSceneActive("Level2", false);
+		SceneManager::GetInstance().SetSceneActive("Level3", true);
+	}
+	if (activeSceneName == "Level3")
+	{
+		SceneManager::GetInstance().SetSceneActive("Level3", false);
+		// highscore scene here
+	}
 }

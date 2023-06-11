@@ -18,6 +18,7 @@ namespace dae
 
 		void Update(float deltaTime) override;
 		void Die();
+		void GameWon();
 
 		Subject* GetActorSubject() const;
 

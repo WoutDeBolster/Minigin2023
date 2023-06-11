@@ -31,9 +31,12 @@ void Scene::Update(float deltaTime)
 	for (auto& object : m_objects)
 	{
 		object->Update(deltaTime);
-		if (object->GetDestroyGameobject())
+		if (!m_objects.empty())
 		{
-			removeObj = object;
+			if (object->GetDestroyGameobject())
+			{
+				removeObj = object;
+			}
 		}
 	}
 

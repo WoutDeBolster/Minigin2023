@@ -2,6 +2,9 @@
 #include "InputManager.h"
 #include <backends/imgui_impl_sdl.h>
 #include "SceneManager.h"
+#include "SoundSystem.h"
+#include "Scene.h"
+#include "JSonReader.h"
 
 dae::InputManager::InputManager()
 {
@@ -63,6 +66,40 @@ bool dae::InputManager::ProcessInput(float deltaTime)
 			{
 				return false;
 			}
+		}
+
+		// TODO: skip level (dirty way to do this here but i do it because otherwise it does it for every scene)
+		if (m_pControllers[i]->IsUp(GamePad::ControllerButton::ButtonB))
+		{
+			auto activeSceneName = SceneManager::GetInstance().GetActiveScene().GetSceneName();
+			if (activeSceneName == "Level1")
+			{
+				SceneManager::GetInstance().SetSceneActive("Level1", false);
+				SceneManager::GetInstance().SetSceneActive("Level2", true);
+			}
+			if (activeSceneName == "Level2")
+			{
+				SceneManager::GetInstance().SetSceneActive("Level2", false);
+				SceneManager::GetInstance().SetSceneActive("Level3", true);
+			}
+			if (activeSceneName == "Level3")
+			{
+				SceneManager::GetInstance().SetSceneActive("Level3", false);
+				JSonReader::GetInstance().ReadHighScore("../Data/HightScore.json");
+				JSonReader::GetInstance().WriteHighscore("../Data/HightScore.json");
+				JSonReader::GetInstance().MakeScoreScene("HighScores");
+				// highscore scene here
+			}
+		}
+
+		// mute music
+		if (m_pControllers[i]->IsUp(GamePad::ControllerButton::ButtonY))
+		{
+			// mute all the sounds
+			ServisLocator::GetSoundSystem().PauzeSound(0);
+			ServisLocator::GetSoundSystem().PauzeSound(1);
+			ServisLocator::GetSoundSystem().PauzeSound(2);
+			ServisLocator::GetSoundSystem().PauzeSound(3);
 		}
 	}
 

@@ -7,6 +7,8 @@
 #include "SoundSystem.h"
 #include "SceneManager.h"
 #include "InputManager.h"
+#include "Scene.h"
+#include "JSonReader.h"
 #include <iostream>
 
 dae::CollisionComp::CollisionComp(std::weak_ptr<GameObject> pOwner, glm::ivec2 textureSize,
@@ -40,14 +42,40 @@ void dae::CollisionComp::Update(float deltaTime)
 		}
 	}
 
-	if (m_pEnemyObjs.size() > 0 && m_AllEnemysDead == false)
+	if (m_pEnemyObjs.size() > 0 && m_AllEnemysDead == false && GetGameObject().lock()->GetComponent<ActorComp>() != nullptr)
 	{
 		CheckCollisionWithEnemys();
 	}
 	if (m_pEnemyObjs.empty() && m_AllEnemysDead)
 	{
-		SceneManager::GetInstance().SetSceneActive("Level1", false);
-		SceneManager::GetInstance().SetSceneActive("Level2", true);
+		// TODO: this should not happen here
+
+		auto sceneName = SceneManager::GetInstance().GetActiveScene().GetSceneName();
+		if (sceneName == "Level1")
+		{
+			m_pBlockObjs.clear();
+			SceneManager::GetInstance().SetSceneActive("Level1", false);
+			SceneManager::GetInstance().SetSceneActive("Level2", true);
+		}
+		if (sceneName == "Level2")
+		{
+			m_pBlockObjs.clear();
+			SceneManager::GetInstance().SetSceneActive("Level2", false);
+			SceneManager::GetInstance().SetSceneActive("Level3", true);
+		}
+		if (sceneName == "Level3")
+		{
+			m_pBlockObjs.clear();
+			GetGameObject().lock()->GetComponent<ActorComp>()->GameWon();
+			SceneManager::GetInstance().SetSceneActive("Level3", false);
+
+			JSonReader::GetInstance().ReadHighScore("../Data/HightScore.json");
+			JSonReader::GetInstance().WriteHighscore("../Data/HightScore.json");
+			JSonReader::GetInstance().MakeScoreScene("HighScores");
+
+			SceneManager::GetInstance().SetSceneActive("HighScores", true);
+		}
+		//m_AllEnemysDead = false;
 	}
 }
 
